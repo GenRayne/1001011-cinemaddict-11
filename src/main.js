@@ -107,7 +107,7 @@ const createFooterStatsTemplate = () => {
 
 const createFilmDetailsTemplate = () => {
   return (
-    `<section class="film-details">
+    `<section class="film-details" style="display: none;">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
@@ -308,3 +308,4 @@ render(contentElement, createFilmsExtraTemplate(`Top rated`), `beforeend`);
 render(contentElement, createFilmsExtraTemplate(`Top commented`), `beforeend`);
 
 render(siteFooterElement, createFooterStatsTemplate(), `beforeend`);
+render(siteFooterElement, createFilmDetailsTemplate(), `afterend`);
