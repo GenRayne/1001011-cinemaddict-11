@@ -8,11 +8,33 @@ import {createFilmsExtraTemplate} from './components/films-extra';
 import {createFooterStatsTemplate} from './components/footer-stats';
 import {createFilmDetailsTemplate} from './components/film-details';
 
-const FILMS_NUMBER = 5;
+import {generateFilms} from './mock/film';
+
+const FILMS_NUMBER = 27;
+const EXTRA_FILMS_NUMBER = 2;
+
+const SHOWN_FILMS_NUMBER_AT_START = 5;
+const SHOWN_FILMS_NUMBER_BY_BTN = 5;
+
+const films = generateFilms(FILMS_NUMBER);
+const extraRatedFilms = generateFilms(EXTRA_FILMS_NUMBER);
+const extraCommentedFilms = generateFilms(EXTRA_FILMS_NUMBER);
+
+let shownFilmsNumber = SHOWN_FILMS_NUMBER_AT_START;
+
+// =======================================================
+
+const renderFilms = (fromIndex, toIndex) => {
+  films.slice(fromIndex, toIndex).forEach((film) => {
+    render(filmsCardsElement, createFilmCardTemplate(film), `beforeend`);
+  });
+};
 
 const render = (container, component, place) => {
   container.insertAdjacentHTML(place, component);
 };
+
+// =======================================================
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
@@ -27,14 +49,27 @@ const contentElement = document.querySelector(`.films`);
 const filmsListElement = document.querySelector(`.films-list`);
 const filmsCardsElement = document.querySelector(`.films-list .films-list__container`);
 
-for (let i = 0; i < FILMS_NUMBER; i++) {
-  render(filmsCardsElement, createFilmCardTemplate(), `beforeend`);
-}
+renderFilms(0, SHOWN_FILMS_NUMBER_AT_START);
 
 render(filmsListElement, createMoreBtn(), `beforeend`);
 
-render(contentElement, createFilmsExtraTemplate(`Top rated`), `beforeend`);
-render(contentElement, createFilmsExtraTemplate(`Top commented`), `beforeend`);
+render(contentElement, createFilmsExtraTemplate(`Top rated`, extraRatedFilms), `beforeend`);
+render(contentElement, createFilmsExtraTemplate(`Top commented`, extraCommentedFilms), `beforeend`);
 
-render(siteFooterElement, createFooterStatsTemplate(), `beforeend`);
+render(siteFooterElement, createFooterStatsTemplate(FILMS_NUMBER), `beforeend`);
 render(siteFooterElement, createFilmDetailsTemplate(), `afterend`);
+
+const moreBtn = filmsListElement.querySelector(`.films-list__show-more`);
+
+// =======================================================
+
+moreBtn.addEventListener(`click`, () => {
+  const prevShownFilmsNumber = shownFilmsNumber;
+  shownFilmsNumber += SHOWN_FILMS_NUMBER_BY_BTN;
+
+  renderFilms(prevShownFilmsNumber, shownFilmsNumber);
+
+  if (shownFilmsNumber >= films.length) {
+    moreBtn.remove();
+  }
+});
