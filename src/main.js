@@ -17,10 +17,17 @@ const SHOWN_FILMS_NUMBER_AT_START = 5;
 const SHOWN_FILMS_NUMBER_BY_BTN = 5;
 
 const films = generateFilms(FILMS_NUMBER);
-const extraRatedFilms = generateFilms(EXTRA_FILMS_NUMBER);
-const extraCommentedFilms = generateFilms(EXTRA_FILMS_NUMBER);
 
 let shownFilmsNumber = SHOWN_FILMS_NUMBER_AT_START;
+
+const topRated = films.slice().sort((a, b) => {
+  return b.rating - a.rating;
+}).slice(0, EXTRA_FILMS_NUMBER);
+
+const topCommented = films.slice().sort((a, b) => {
+  return b.comments.length - a.comments.length;
+})
+.slice(0, EXTRA_FILMS_NUMBER);
 
 // =======================================================
 
@@ -40,8 +47,8 @@ const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
-render(siteHeaderElement, createUserSection(), `beforeend`);
-render(siteMainElement, createMainMenuTemplate(), `beforeend`);
+render(siteHeaderElement, createUserSection(films), `beforeend`);
+render(siteMainElement, createMainMenuTemplate(films), `beforeend`);
 render(siteMainElement, createSortTemplate(), `beforeend`);
 render(siteMainElement, createFilmsSectionTemplate(), `beforeend`);
 
@@ -53,11 +60,11 @@ renderFilms(0, SHOWN_FILMS_NUMBER_AT_START);
 
 render(filmsListElement, createMoreBtn(), `beforeend`);
 
-render(contentElement, createFilmsExtraTemplate(`Top rated`, extraRatedFilms), `beforeend`);
-render(contentElement, createFilmsExtraTemplate(`Top commented`, extraCommentedFilms), `beforeend`);
+render(contentElement, createFilmsExtraTemplate(`Top rated`, topRated), `beforeend`);
+render(contentElement, createFilmsExtraTemplate(`Top commented`, topCommented), `beforeend`);
 
 render(siteFooterElement, createFooterStatsTemplate(FILMS_NUMBER), `beforeend`);
-render(siteFooterElement, createFilmDetailsTemplate(), `afterend`);
+render(siteFooterElement, createFilmDetailsTemplate(films[0]), `afterend`);
 
 const moreBtn = filmsListElement.querySelector(`.films-list__show-more`);
 

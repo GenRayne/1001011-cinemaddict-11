@@ -1,12 +1,27 @@
-import {getRandomInteger, getRandomBoolean, getRandomArrayItem} from '../utils';
+import {
+  getRandomInteger,
+  getRandomBoolean,
+  getRandomArrayItem,
+  getRandomDate,
+} from '../utils';
+import {EMOJIS} from '../const';
 
 const MIN_SENTENCES_NUMBER = 1;
 const MAX_SENTENCES_NUMBER = 5;
-const MIN_RELEASE_YEAR = 1920;
-const MAX_RELEASE_YEAR = 2000;
+
+const MIN_RELEASE_DATE = new Date(1920, 0, 1);
+const MAX_RELEASE_DATE = new Date(1999, 11, 31);
+
 const MAX_DURATION_H = 1;
 const MIN_DURATION_M = 30;
 const MAX_DURATION_M = 59;
+
+const MIN_GENRES_NUMBER = 1;
+const MAX_GENRES_NUMBER = 3;
+
+const MIN_PEOPLE_NUMBER = 1;
+const MAX_PEOPLE_NUMBER = 3;
+
 const MAX_COMMENTS_NUMBER = 5;
 
 const filmTitles = [
@@ -49,7 +64,40 @@ const genres = [
   `Western`,
   `Comedy`,
   `Cartoon`,
-  `Mystery`
+  `Mystery`,
+];
+
+const countries = [
+  `USA`,
+  `Germany`,
+  `France`,
+];
+
+const filmCrew = [
+  `Anthony Mann`,
+  `Anne Wigton`,
+  `Heinz Herald`,
+  `Richard Weil`,
+  `Erich von Stroheim`,
+  `Mary Beth Hughes`,
+  `Dan Duryea`,
+];
+
+const usernames = [
+  `Tim Macoveev`,
+  `Malcolm Reynolds`,
+  `Keanu Reeves`,
+  `Peter Pan`,
+  `John Doe`,
+];
+
+const messages = [
+  `Interesting setting and a good cast`,
+  `Booooooooooring`,
+  `Very very old. Meh`,
+  `Almost two hours? Seriously?`,
+  `I was aiming for the head...`,
+  `No, you're breathtaking!`,
 ];
 
 const getDesriptionSentences = (sentencesNumber) => {
@@ -69,6 +117,31 @@ const getDesriptionSentences = (sentencesNumber) => {
   return descriptionSentences;
 };
 
+const getRandomArrayFromArray = (array, max, min) => {
+  const randomArray = [];
+  while (randomArray.length <= getRandomInteger(max, min)) {
+    const newItem = getRandomArrayItem(array);
+    if (randomArray.indexOf(newItem) === -1) {
+      randomArray.push(newItem);
+    }
+  }
+  return randomArray;
+};
+
+const generateComment = () => {
+  return {
+    username: getRandomArrayItem(usernames),
+    emoji: getRandomArrayItem(EMOJIS),
+    message: getRandomArrayItem(messages),
+    date: getRandomDate(new Date(2010, 0, 1), new Date()),
+  };
+};
+
+const generateComments = () => {
+  return new Array(getRandomInteger(MAX_COMMENTS_NUMBER))
+    .fill(``).map(generateComment);
+};
+
 const generateFilm = () => {
   const randomIndex = getRandomInteger(filmTitles.length);
   const sentencesNumber = getRandomInteger(MAX_SENTENCES_NUMBER, MIN_SENTENCES_NUMBER);
@@ -80,16 +153,24 @@ const generateFilm = () => {
     title: filmTitles[randomIndex],
     posterSrc: posterSrcs[randomIndex],
     description: getDesriptionSentences(sentencesNumber).join(` `),
+    releaseDate: getRandomDate(MIN_RELEASE_DATE, MAX_RELEASE_DATE),
+
     rating: (Math.random() * 10).toFixed(1),
-    releaseYear: getRandomInteger(MAX_RELEASE_YEAR, MIN_RELEASE_YEAR),
     duration: `${durationHours}${durationMinutes}`,
-    genre: getRandomArrayItem(genres),
+    genres: getRandomArrayFromArray(genres, MAX_GENRES_NUMBER, MIN_GENRES_NUMBER),
+
+    director: getRandomArrayItem(filmCrew),
+    writers: getRandomArrayFromArray(filmCrew, MAX_PEOPLE_NUMBER, MIN_PEOPLE_NUMBER),
+    actors: getRandomArrayFromArray(filmCrew, MAX_PEOPLE_NUMBER, MIN_PEOPLE_NUMBER),
+
+    country: getRandomArrayItem(countries),
+    age: getRandomBoolean() ? `18+` : `12+`,
 
     isInWatchlist: getRandomBoolean(),
     isWatched: getRandomBoolean(),
     isFavourite: getRandomBoolean(),
 
-    commentsNumber: getRandomInteger(MAX_COMMENTS_NUMBER),
+    comments: generateComments(),
   };
 };
 
