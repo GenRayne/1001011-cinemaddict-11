@@ -3,6 +3,7 @@ import {
   getRandomBoolean,
   getRandomArrayItem,
   getRandomDate,
+  getRandomArrayFromArray,
 } from '../utils';
 import {EMOJIS} from '../const';
 
@@ -11,6 +12,8 @@ const MAX_SENTENCES_NUMBER = 5;
 
 const MIN_RELEASE_DATE = new Date(1920, 0, 1);
 const MAX_RELEASE_DATE = new Date(1999, 11, 31);
+
+const MAX_RATING = 10;
 
 const MAX_DURATION_H = 1;
 const MIN_DURATION_M = 30;
@@ -23,8 +26,9 @@ const MIN_PEOPLE_NUMBER = 1;
 const MAX_PEOPLE_NUMBER = 3;
 
 const MAX_COMMENTS_NUMBER = 5;
+const MIN_COMMENT_DATE = [2010, 0, 1];
 
-const filmTitles = [
+const FILM_TITLES = [
   `The Dance of Life`,
   `Sagebrush Trail`,
   `The Man with the Golden Arm`,
@@ -34,7 +38,7 @@ const filmTitles = [
   `The Great Flamarion`,
 ];
 
-const posterSrcs = [
+const POSTER_SRCS = [
   `./images/posters/the-dance-of-life.jpg`,
   `./images/posters/sagebrush-trail.jpg`,
   `./images/posters/the-man-with-the-golden-arm.jpg`,
@@ -44,7 +48,7 @@ const posterSrcs = [
   `./images/posters/the-great-flamarion.jpg`,
 ];
 
-const descriptionParts = [
+const DESCRIPTION_PARTS = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
@@ -58,7 +62,7 @@ const descriptionParts = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-const genres = [
+const GENRES = [
   `Musical`,
   `Drama`,
   `Western`,
@@ -67,13 +71,13 @@ const genres = [
   `Mystery`,
 ];
 
-const countries = [
+const COUNTRIES = [
   `USA`,
   `Germany`,
   `France`,
 ];
 
-const filmCrew = [
+const FILM_СREW = [
   `Anthony Mann`,
   `Anne Wigton`,
   `Heinz Herald`,
@@ -83,7 +87,7 @@ const filmCrew = [
   `Dan Duryea`,
 ];
 
-const usernames = [
+const USERNAMES = [
   `Tim Macoveev`,
   `Malcolm Reynolds`,
   `Keanu Reeves`,
@@ -91,7 +95,7 @@ const usernames = [
   `John Doe`,
 ];
 
-const messages = [
+const MESSAGES = [
   `Interesting setting and a good cast`,
   `Booooooooooring`,
   `Very very old. Meh`,
@@ -100,40 +104,35 @@ const messages = [
   `No, you're breathtaking!`,
 ];
 
+const AGES = [
+  `6+`,
+  `12+`,
+  `18+`,
+];
+
 const getDesriptionSentences = (sentencesNumber) => {
   let descriptionSentences = [];
-  for (let i = 0; i < descriptionParts.length; i++) {
+  for (let i = 0; i < DESCRIPTION_PARTS.length; i++) {
     if (descriptionSentences.length >= sentencesNumber) {
       break;
     }
     if (getRandomBoolean()) {
-      descriptionSentences.push(descriptionParts[i]);
+      descriptionSentences.push(DESCRIPTION_PARTS[i]);
     }
   }
   if (!descriptionSentences.length) {
-    descriptionSentences.push(getRandomArrayItem(descriptionParts));
+    descriptionSentences.push(getRandomArrayItem(DESCRIPTION_PARTS));
   }
 
   return descriptionSentences;
 };
 
-const getRandomArrayFromArray = (array, max, min) => {
-  const randomArray = [];
-  while (randomArray.length <= getRandomInteger(max, min)) {
-    const newItem = getRandomArrayItem(array);
-    if (randomArray.indexOf(newItem) === -1) {
-      randomArray.push(newItem);
-    }
-  }
-  return randomArray;
-};
-
 const generateComment = () => {
   return {
-    username: getRandomArrayItem(usernames),
+    username: getRandomArrayItem(USERNAMES),
     emoji: getRandomArrayItem(EMOJIS),
-    message: getRandomArrayItem(messages),
-    date: getRandomDate(new Date(2010, 0, 1), new Date()),
+    message: getRandomArrayItem(MESSAGES),
+    date: getRandomDate(new Date(...MIN_COMMENT_DATE), new Date()),
   };
 };
 
@@ -143,28 +142,28 @@ const generateComments = () => {
 };
 
 const generateFilm = () => {
-  const randomIndex = getRandomInteger(filmTitles.length);
+  const randomIndex = getRandomInteger(FILM_TITLES.length - 1);
   const sentencesNumber = getRandomInteger(MAX_SENTENCES_NUMBER, MIN_SENTENCES_NUMBER);
 
   const durationHours = getRandomInteger(MAX_DURATION_H) ? `${getRandomInteger(MAX_DURATION_H)}h ` : ``;
   const durationMinutes = `${getRandomInteger(MAX_DURATION_M, MIN_DURATION_M)}m`;
 
   return {
-    title: filmTitles[randomIndex],
-    posterSrc: posterSrcs[randomIndex],
+    title: FILM_TITLES[randomIndex],
+    posterSrc: POSTER_SRCS[randomIndex],
     description: getDesriptionSentences(sentencesNumber).join(` `),
     releaseDate: getRandomDate(MIN_RELEASE_DATE, MAX_RELEASE_DATE),
 
-    rating: (Math.random() * 10).toFixed(1),
+    rating: (Math.random() * MAX_RATING).toFixed(1),
     duration: `${durationHours}${durationMinutes}`,
-    genres: getRandomArrayFromArray(genres, MAX_GENRES_NUMBER, MIN_GENRES_NUMBER),
+    genres: getRandomArrayFromArray(GENRES, MAX_GENRES_NUMBER, MIN_GENRES_NUMBER),
 
-    director: getRandomArrayItem(filmCrew),
-    writers: getRandomArrayFromArray(filmCrew, MAX_PEOPLE_NUMBER, MIN_PEOPLE_NUMBER),
-    actors: getRandomArrayFromArray(filmCrew, MAX_PEOPLE_NUMBER, MIN_PEOPLE_NUMBER),
+    director: getRandomArrayItem(FILM_СREW),
+    writers: getRandomArrayFromArray(FILM_СREW, MAX_PEOPLE_NUMBER, MIN_PEOPLE_NUMBER),
+    actors: getRandomArrayFromArray(FILM_СREW, MAX_PEOPLE_NUMBER, MIN_PEOPLE_NUMBER),
 
-    country: getRandomArrayItem(countries),
-    age: getRandomBoolean() ? `18+` : `12+`,
+    country: getRandomArrayItem(COUNTRIES),
+    age: getRandomArrayItem(AGES),
 
     isInWatchlist: getRandomBoolean(),
     isWatched: getRandomBoolean(),

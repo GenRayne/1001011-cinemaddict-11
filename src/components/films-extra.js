@@ -2,8 +2,8 @@ import {createFilmCardTemplate} from './film-card';
 
 const createExtraFilmCardsTemplate = (films) => {
   const cards = [];
-  for (let i = 0; i < films.length; i++) {
-    cards.push(createFilmCardTemplate(films[i]));
+  for (const film of films) {
+    cards.push(createFilmCardTemplate(film));
   }
   return cards.join(`\n`);
 };

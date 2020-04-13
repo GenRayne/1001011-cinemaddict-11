@@ -1,3 +1,5 @@
+const DESCRIPTION_LENGTH = 140;
+
 const createFilmCardTemplate = (film) => {
   const {
     title,
@@ -17,8 +19,8 @@ const createFilmCardTemplate = (film) => {
 
   let shortDescription = description;
 
-  if (shortDescription.length > 140) {
-    shortDescription = `${shortDescription.slice(0, 139)}...`;
+  if (shortDescription.length > DESCRIPTION_LENGTH) {
+    shortDescription = `${shortDescription.slice(0, DESCRIPTION_LENGTH - 1)}...`;
   }
 
   return (

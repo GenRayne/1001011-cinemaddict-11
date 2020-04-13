@@ -1,4 +1,5 @@
-import {MONTHS, EMOJIS} from '../const';
+import {EMOJIS} from '../const';
+import {formatDate, formatTime, formatLongDate} from '../utils';
 
 const createFilmDetailsTemplate = (film) => {
   const {
@@ -20,13 +21,11 @@ const createFilmDetailsTemplate = (film) => {
     comments,
   } = film;
 
-  const dateOfRelease = `${releaseDate.getDate()} ${MONTHS[releaseDate.getMonth()]} ${releaseDate.getFullYear()}`;
+  const dateOfRelease = `${releaseDate.getDate()} ${formatLongDate(releaseDate)}`;
 
-  const filmGenres = genres.map((genre) => {
-    return (
-      `<span class="film-details__genre">${genre}</span>`
-    );
-  });
+  const filmGenres = genres.map((genre) => (
+    `<span class="film-details__genre">${genre}</span>`
+  ));
 
   const filmComments = comments.map((comment) => {
     const {
@@ -35,14 +34,6 @@ const createFilmDetailsTemplate = (film) => {
       message,
       date,
     } = comment;
-
-    const commentMonth = date.getMonth() > 9 ? `${date.getMonth()}` : `0${date.getMonth()}`;
-    const commentDay = date.getDate() > 9 ? `${date.getDate()}` : `0${date.getDate()}`;
-    const commentDate = `${date.getFullYear()}/${commentMonth}/${commentDay}`;
-
-    const commentHours = date.getHours() > 9 ? `${date.getHours()}` : `0${date.getHours()}`;
-    const commentMinutes = date.getMinutes() > 9 ? `${date.getMinutes()}` : `0${date.getMinutes()}`;
-    const commentTime = `${commentHours}:${commentMinutes}`;
 
     return (
       `<li class="film-details__comment">
@@ -53,7 +44,7 @@ const createFilmDetailsTemplate = (film) => {
           <p class="film-details__comment-text">${message}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${username}</span>
-            <span class="film-details__comment-day">${commentDate} ${commentTime}</span>
+            <span class="film-details__comment-day">${formatDate(date)} ${formatTime(date)}</span>
             <button class="film-details__comment-delete">Delete</button>
           </p>
         </div>

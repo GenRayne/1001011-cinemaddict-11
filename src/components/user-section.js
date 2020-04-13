@@ -1,16 +1,19 @@
+import {UserRating, RatingStep} from '../const';
+
 const createUserSection = (films) => {
-  const watchedFilmsNumber = films.filter((film) => {
+  const filmsWatched = films.filter((film) => {
     return film.isWatched;
-  });
+  }).length;
 
   let userRating = ``;
 
-  if (watchedFilmsNumber.length > 0 && watchedFilmsNumber.length <= 10) {
-    userRating = `Novice`;
-  } else if (watchedFilmsNumber.length > 10 && watchedFilmsNumber.length <= 20) {
-    userRating = `Fan`;
-  } else if (watchedFilmsNumber.length > 20) {
-    userRating = `Movie Buff`;
+  if (filmsWatched && filmsWatched <= RatingStep.FIRST) {
+    userRating = UserRating.NOVICE;
+  } else if (filmsWatched > RatingStep.FIRST
+          && filmsWatched <= RatingStep.SECOND) {
+    userRating = UserRating.FAN;
+  } else if (filmsWatched > RatingStep.SECOND) {
+    userRating = UserRating.MOVIE_BUFF;
   }
 
   return (

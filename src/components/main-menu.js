@@ -1,9 +1,4 @@
-const navItemsNames = {
-  'all': `All movies`,
-  'watchlist': `Watchlist`,
-  'history': `History`,
-  'favorites': `Favorites`,
-};
+import {MovieList, navItemsNames} from '../const';
 
 const createNavItem = (film) => {
   const {name, count, isActive} = film;
@@ -15,7 +10,7 @@ const createNavItem = (film) => {
         ${isActive ? `main-navigation__item--active` : ``}
       "
     >${navItemsNames[name]} ${
-      name !== `all` ?
+      name !== MovieList.ALL ?
         `<span class="main-navigation__item-count">${count}</span></a>`
         : ``
     }`
@@ -23,36 +18,28 @@ const createNavItem = (film) => {
 };
 
 const createMainMenuTemplate = (films) => {
-  const watchlistFilmsNumber = films.filter((film) => {
-    return film.isInWatchlist;
-  });
-
-  const watchedFilmsNumber = films.filter((film) => {
-    return film.isWatched;
-  });
-
-  const favouriteFilmsNumber = films.filter((film) => {
-    return film.isFavourite;
-  });
+  const watchlistFilmsNumber = films.filter((film) => film.isInWatchlist);
+  const watchedFilmsNumber = films.filter((film) => film.isWatched);
+  const favouriteFilmsNumber = films.filter((film) => film.isFavourite);
 
   const navItems = [
     {
-      name: `all`,
+      name: MovieList.ALL,
       count: films.length,
       isActive: true,
     },
     {
-      name: `watchlist`,
+      name: MovieList.WATCHLIST,
       count: watchlistFilmsNumber.length,
       isActive: false,
     },
     {
-      name: `history`,
+      name: MovieList.HISTORY,
       count: watchedFilmsNumber.length,
       isActive: false,
     },
     {
-      name: `favorites`,
+      name: MovieList.FAVORITES,
       count: favouriteFilmsNumber.length,
       isActive: false,
     },
