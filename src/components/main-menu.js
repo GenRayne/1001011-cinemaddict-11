@@ -1,19 +1,20 @@
-import {MovieList, navItemsNames} from '../const';
+import {MoviesFilter, navItemsNames} from '../const';
+import {createElement} from '../utils';
+
+const filmsCount = (name, count) => {
+  return (name !== MoviesFilter.ALL) ?
+    `<span class="main-navigation__item-count">${count}</span>`
+    : ``;
+};
 
 const createNavItem = (film) => {
   const {name, count, isActive} = film;
 
+  const activeClass = isActive ? `main-navigation__item--active` : ``;
+
   return (
-    `<a href="#${name}"
-      class="
-        main-navigation__item
-        ${isActive ? `main-navigation__item--active` : ``}
-      "
-    >${navItemsNames[name]} ${
-      name !== MovieList.ALL ?
-        `<span class="main-navigation__item-count">${count}</span></a>`
-        : ``
-    }`
+    `<a href="#${name}" class="main-navigation__item ${activeClass}"
+    >${navItemsNames[name]} ${filmsCount(name, count)}</a>`
   );
 };
 
@@ -24,22 +25,22 @@ const createMainMenuTemplate = (films) => {
 
   const navItems = [
     {
-      name: MovieList.ALL,
+      name: MoviesFilter.ALL,
       count: films.length,
       isActive: true,
     },
     {
-      name: MovieList.WATCHLIST,
+      name: MoviesFilter.WATCHLIST,
       count: watchlistFilmsNumber.length,
       isActive: false,
     },
     {
-      name: MovieList.HISTORY,
+      name: MoviesFilter.HISTORY,
       count: watchedFilmsNumber.length,
       isActive: false,
     },
     {
-      name: MovieList.FAVORITES,
+      name: MoviesFilter.FAVORITES,
       count: favouriteFilmsNumber.length,
       isActive: false,
     },
@@ -55,4 +56,24 @@ const createMainMenuTemplate = (films) => {
   );
 };
 
-export {createMainMenuTemplate};
+export default class MainMenu {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMainMenuTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

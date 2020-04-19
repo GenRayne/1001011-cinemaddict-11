@@ -1,6 +1,7 @@
 import {UserRating, RatingStep} from '../const';
+import {createElement} from '../utils';
 
-const createUserSection = (films) => {
+const createUserSectionTemplate = (films) => {
   const filmsWatched = films.filter((film) => {
     return film.isWatched;
   }).length;
@@ -24,4 +25,24 @@ const createUserSection = (films) => {
   );
 };
 
-export {createUserSection};
+export default class UserSection {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUserSectionTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

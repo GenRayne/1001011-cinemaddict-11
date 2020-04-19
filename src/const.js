@@ -1,15 +1,30 @@
-export const MovieList = {
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`,
+};
+
+export const Key = {
+  ESCAPE: `Escape`,
+};
+
+export const MoviesFilter = {
   ALL: `all`,
   WATCHLIST: `watchlist`,
   HISTORY: `history`,
-  FAVORITES: `favorites`
+  FAVORITES: `favorites`,
 };
 
 export const navItemsNames = {
-  [MovieList.ALL]: `All movies`,
-  [MovieList.WATCHLIST]: `Watchlist`,
-  [MovieList.HISTORY]: `History`,
-  [MovieList.FAVORITES]: `Favorites`,
+  [MoviesFilter.ALL]: `All movies`,
+  [MoviesFilter.WATCHLIST]: `Watchlist`,
+  [MoviesFilter.HISTORY]: `History`,
+  [MoviesFilter.FAVORITES]: `Favorites`,
+};
+
+export const ExtraTitle = {
+  TOP_RATED: `Top rated`,
+  TOP_COMMENTED: `Top commented`,
 };
 
 export const UserRating = {
@@ -20,7 +35,7 @@ export const UserRating = {
 
 export const RatingStep = {
   FIRST: 10,
-  SECOND: 20
+  SECOND: 20,
 };
 
 export const EMOJIS = [
