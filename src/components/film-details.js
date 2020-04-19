@@ -28,10 +28,11 @@ const createFilmDetailsTemplate = (film) => {
   } = film;
 
   const dateOfRelease = `${releaseDate.getDate()} ${formatLongDate(releaseDate)}`;
+  const filmWriters = writers.join(`, `);
+  const filmActors = actors.join(`, `);
 
-  const filmGenres = genres.map((genre) => (
-    `<span class="film-details__genre">${genre}</span>`
-  ));
+  const filmGenres = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
+  .join(` `);
 
   const filmComments = comments.map((comment) => {
     const {
@@ -40,6 +41,8 @@ const createFilmDetailsTemplate = (film) => {
       message,
       date,
     } = comment;
+
+    const commentDate = `${formatDate(date)} ${formatTime(date)}`;
 
     return (
       `<li class="film-details__comment">
@@ -50,20 +53,20 @@ const createFilmDetailsTemplate = (film) => {
           <p class="film-details__comment-text">${message}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${username}</span>
-            <span class="film-details__comment-day">${formatDate(date)} ${formatTime(date)}</span>
+            <span class="film-details__comment-day">${commentDate}</span>
             <button class="film-details__comment-delete">Delete</button>
           </p>
         </div>
       </li>`
     );
-  });
+  }).join(`\n`);
 
   const commentEmojis = EMOJIS.map((emoji) => {
     return `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
     </label>`;
-  });
+  }).join(`\n`);
 
   return (
     `<section class="film-details">
@@ -98,11 +101,11 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${writers.join(`, `)}</td>
+                  <td class="film-details__cell">${filmWriters}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${actors.join(`, `)}</td>
+                  <td class="film-details__cell">${filmActors}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
@@ -119,7 +122,7 @@ const createFilmDetailsTemplate = (film) => {
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
                   <td class="film-details__cell">
-                    ${filmGenres.join(` `)}
+                    ${filmGenres}
                   </td>
                 </tr>
               </table>
@@ -167,7 +170,7 @@ const createFilmDetailsTemplate = (film) => {
               >${filmComments.length}</span></h3>
 
             <ul class="film-details__comments-list">
-              ${filmComments.join(`\n`)}
+              ${filmComments}
             </ul>
 
             <div class="film-details__new-comment">
@@ -178,7 +181,7 @@ const createFilmDetailsTemplate = (film) => {
               </label>
 
               <div class="film-details__emoji-list">
-                ${commentEmojis.join(`\n`)}
+                ${commentEmojis}
               </div>
             </div>
           </section>

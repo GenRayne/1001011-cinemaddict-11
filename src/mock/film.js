@@ -173,8 +173,6 @@ const generateFilm = () => {
   };
 };
 
-const generateFilms = (count) => {
-  return new Array(count).fill(``).map(generateFilm);
-};
+const generateFilms = (count) => new Array(count).fill(``).map(generateFilm);
 
 export {generateFilm, generateFilms};

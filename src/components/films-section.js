@@ -1,10 +1,6 @@
 import {createElement} from '../utils';
 
-const createFilmsSectionTemplate = () => {
-  return (
-    `<section class="films"></section>`
-  );
-};
+const createFilmsSectionTemplate = () => `<section class="films"></section>`;
 
 export default class FilmsSection {
   constructor() {

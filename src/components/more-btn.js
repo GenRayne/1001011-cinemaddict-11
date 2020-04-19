@@ -1,10 +1,6 @@
 import {createElement} from '../utils';
 
-const createMoreBtnTemplate = () => {
-  return (
-    `<button class="films-list__show-more">Show more</button>`
-  );
-};
+const createMoreBtnTemplate = () => `<button class="films-list__show-more">Show more</button>`;
 
 export default class MoreBtn {
   constructor() {

@@ -15,7 +15,7 @@ export const MoviesFilter = {
   FAVORITES: `favorites`,
 };
 
-export const navItemsNames = {
+export const filterToNavItemName = {
   [MoviesFilter.ALL]: `All movies`,
   [MoviesFilter.WATCHLIST]: `Watchlist`,
   [MoviesFilter.HISTORY]: `History`,

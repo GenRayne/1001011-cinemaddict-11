@@ -22,9 +22,7 @@ export const isChecked = (isTrue) => isTrue ? `checked` : ``;
 
 // ================= Время / дата =================
 
-export const castTimeFormat = (value) => {
-  return String(value).padStart(2, `0`);
-};
+export const castTimeFormat = (value) => String(value).padStart(2, `0`);
 
 export const formatTime = (date) => {
   const hours = castTimeFormat(date.getHours());
@@ -51,18 +49,14 @@ export const formatLongDate = (date) => {
 
 // ============== Случайные значения ==============
 
-export const getRandomInteger = (max, min = 0) => {
-  return Math.floor(Math.random() * (max - min)) + min;
-};
+export const getRandomInteger = (max, min = 0) => Math.floor(Math.random() * (max - min)) + min;
 
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomInteger(array.length);
   return array[randomIndex];
 };
 
-export const getRandomBoolean = () => {
-  return Math.random() > 0.5;
-};
+export const getRandomBoolean = () => Math.random() > 0.5;
 
 export const getRandomDate = (start, end) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
