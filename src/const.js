@@ -4,6 +4,10 @@ export const RenderPosition = {
   AFTEREND: `afterend`,
 };
 
+export const Key = {
+  ESCAPE: `Escape`,
+};
+
 export const MoviesFilter = {
   ALL: `all`,
   WATCHLIST: `watchlist`,

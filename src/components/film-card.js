@@ -58,8 +58,6 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export {createFilmCardTemplate};
-
 export default class FilmCard {
   constructor(film) {
     this._film = film;

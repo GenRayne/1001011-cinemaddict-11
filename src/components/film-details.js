@@ -66,7 +66,7 @@ const createFilmDetailsTemplate = (film) => {
   });
 
   return (
-    `<section class="film-details" style="display: none;">
+    `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="form-details__top-container">
           <div class="film-details__close">
