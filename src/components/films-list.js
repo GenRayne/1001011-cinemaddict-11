@@ -1,22 +1,15 @@
 import {createElement} from '../utils';
-import {navItemsNames} from '../const';
 
-const createFilmsListTemplate = (title = navItemsNames.ALL) => {
-  return (
-    `<section class="films-list">
-      <h2 class="films-list__title visually-hidden">${title}. Upcoming</h2>
-    </section>`
-  );
-};
+const createFilmsListTemplate = () => `<section class="films-list"></section>`;
 
 export default class FilmsList {
-  constructor(title) {
-    this._title = title;
+  constructor(heading) {
+    this._heading = heading;
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsListTemplate(this._title);
+    return createFilmsListTemplate(this._heading);
   }
 
   getElement() {

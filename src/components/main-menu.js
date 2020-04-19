@@ -1,4 +1,4 @@
-import {MoviesFilter, navItemsNames} from '../const';
+import {MoviesFilter, filterToNavItemName} from '../const';
 import {createElement} from '../utils';
 
 const filmsCount = (name, count) => {
@@ -11,10 +11,11 @@ const createNavItem = (film) => {
   const {name, count, isActive} = film;
 
   const activeClass = isActive ? `main-navigation__item--active` : ``;
+  const navItem = `${filterToNavItemName[name]} ${filmsCount(name, count)}`;
 
   return (
     `<a href="#${name}" class="main-navigation__item ${activeClass}"
-    >${navItemsNames[name]} ${filmsCount(name, count)}</a>`
+    >${navItem}</a>`
   );
 };
 
@@ -44,12 +45,14 @@ const createMainMenuTemplate = (films) => {
       count: favouriteFilmsNumber.length,
       isActive: false,
     },
-  ];
+  ]
+  .map(createNavItem)
+  .join(`\n`);
 
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
-        ${navItems.map(createNavItem).join(`\n`)}
+        ${navItems}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
     </nav>`

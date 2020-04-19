@@ -3,6 +3,7 @@ import MainMenu from './components/main-menu';
 import Sort from './components/sort';
 import FilmsSection from './components/films-section';
 import FilmsList from './components/films-list';
+import FilmListHeading from './components/films-list-heading';
 import FilmsContainer from './components/films-container';
 import FilmCard from './components/film-card';
 import MoreBtn from './components/more-btn';
@@ -43,6 +44,11 @@ const sortElement = new Sort().getElement();
 
 const filmsContainerElement = new FilmsContainer().getElement();
 const filmsListElement = new FilmsList(filmsContainerElement).getElement();
+
+const isEmpty = !films.length;
+const isEmptyText = isEmpty ? `There are no movies in our database` : undefined;
+const filmListHeading = new FilmListHeading(!isEmpty, isEmptyText).getElement();
+
 const filmsSectionElement = new FilmsSection(filmsListElement).getElement();
 
 const filmsTopRatedElement = new FilmsExtra(ExtraTitle.TOP_RATED, topRated).getElement();
@@ -64,6 +70,7 @@ const renderFilm = (filmsListContainer, film) => {
 
   const onCloseBtnClick = () => {
     filmDetailsElement.remove();
+    document.removeEventListener(`keydown`, onEscapePress);
   };
 
   const onEscapePress = (evt) => {
@@ -97,10 +104,15 @@ const renderFilms = (filmsContainer, filmsList, fromIndex, toIndex) => {
 
 const renderFilmSection = () => {
   render(siteMainElement, filmsSectionElement, RenderPosition.BEFOREEND);
-  renderFilms(filmsContainerElement, films, START_INDEX, SHOWN_FILMS_NUMBER_AT_START);
-
-  render(filmsListElement, filmsContainerElement, RenderPosition.BEFOREEND);
   render(filmsSectionElement, filmsListElement, RenderPosition.BEFOREEND);
+
+  if (!films.length) {
+    render(filmsListElement, filmListHeading, RenderPosition.AFTERBEGIN);
+    return;
+  }
+
+  renderFilms(filmsContainerElement, films, START_INDEX, SHOWN_FILMS_NUMBER_AT_START);
+  render(filmsListElement, filmsContainerElement, RenderPosition.BEFOREEND);
 
   render(filmsListElement, moreBtnElement, RenderPosition.BEFOREEND);
 

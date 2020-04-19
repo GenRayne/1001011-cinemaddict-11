@@ -1,9 +1,7 @@
 import {createElement} from '../utils';
 
 const createFilmsContainerTemplate = () => {
-  return (
-    `<div class="films-list__container"></div>`
-  );
+  return `<div class="films-list__container"></div>`;
 };
 
 export default class FilmsContainer {
