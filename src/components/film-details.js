@@ -1,5 +1,11 @@
 import {EMOJIS} from '../const';
-import {formatDate, formatTime, formatLongDate} from '../utils';
+import {
+  formatDate,
+  formatTime,
+  formatLongDate,
+  isChecked,
+  createElement
+} from '../utils';
 
 const createFilmDetailsTemplate = (film) => {
   const {
@@ -130,7 +136,7 @@ const createFilmDetailsTemplate = (film) => {
               class="film-details__control-input visually-hidden"
               id="watchlist"
               name="watchlist"
-              ${isInWatchlist ? `checked` : ``}
+              ${isChecked(isInWatchlist)}
             >
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
@@ -139,7 +145,7 @@ const createFilmDetailsTemplate = (film) => {
               class="film-details__control-input visually-hidden"
               id="watched"
               name="watched"
-              ${isWatched ? `checked` : ``}
+              ${isChecked(isWatched)}
             >
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
@@ -148,7 +154,7 @@ const createFilmDetailsTemplate = (film) => {
               class="film-details__control-input visually-hidden"
               id="favorite"
               name="favorite"
-              ${isFavourite ? `checked` : ``}
+              ${isChecked(isFavourite)}
             >
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
@@ -182,4 +188,24 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
-export {createFilmDetailsTemplate};
+export default class FilmDetails {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
