@@ -52,23 +52,21 @@ const filmsTopRatedContainer = new FilmsContainer().getElement();
 const filmsTopCommentedContainer = new FilmsContainer().getElement();
 
 const moreBtnElement = new MoreBtn().getElement();
+const footerStatsElement = new FooterStats(FILMS_NUMBER).getElement();
 
 // =======================================================
 
 const renderFilm = (filmsListContainer, film) => {
-  const onPopupOpen = (evt) => {
-    evt.preventDefault();
+  const onPopupOpen = () => {
     bodyElement.append(filmDetailsElement);
     document.addEventListener(`keydown`, onEscapePress);
   };
 
-  const onCloseBtnClick = (evt) => {
-    evt.preventDefault();
+  const onCloseBtnClick = () => {
     filmDetailsElement.remove();
   };
 
   const onEscapePress = (evt) => {
-    evt.preventDefault();
     if (evt.key === Key.ESCAPE) {
       filmDetailsElement.remove();
       document.removeEventListener(`keydown`, onEscapePress);
@@ -97,16 +95,14 @@ const renderFilms = (filmsContainer, filmsList, fromIndex, toIndex) => {
   });
 };
 
-const renderPage = () => {
-  render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
-  render(siteMainElement, mainMenuElement, RenderPosition.BEFOREEND);
-  render(siteMainElement, sortElement, RenderPosition.BEFOREEND);
+const renderFilmSection = () => {
   render(siteMainElement, filmsSectionElement, RenderPosition.BEFOREEND);
-
   renderFilms(filmsContainerElement, films, START_INDEX, SHOWN_FILMS_NUMBER_AT_START);
 
   render(filmsListElement, filmsContainerElement, RenderPosition.BEFOREEND);
   render(filmsSectionElement, filmsListElement, RenderPosition.BEFOREEND);
+
+  render(filmsListElement, moreBtnElement, RenderPosition.BEFOREEND);
 
   renderFilms(filmsTopRatedContainer, topRated, START_INDEX);
   renderFilms(filmsTopCommentedContainer, topCommented, START_INDEX);
@@ -115,8 +111,16 @@ const renderPage = () => {
   render(filmsTopCommentedElement, filmsTopCommentedContainer, RenderPosition.BEFOREEND);
   render(filmsSectionElement, filmsTopRatedElement, RenderPosition.BEFOREEND);
   render(filmsSectionElement, filmsTopCommentedElement, RenderPosition.BEFOREEND);
+};
 
-  render(filmsListElement, moreBtnElement, RenderPosition.BEFOREEND);
+const renderPage = () => {
+  render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
+  render(siteMainElement, mainMenuElement, RenderPosition.BEFOREEND);
+  render(siteMainElement, sortElement, RenderPosition.BEFOREEND);
+
+  renderFilmSection();
+
+  render(siteFooterElement, footerStatsElement, `beforeend`);
 };
 
 // =======================================================
@@ -127,8 +131,6 @@ const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
 renderPage();
-
-render(siteFooterElement, new FooterStats(FILMS_NUMBER).getElement(), `beforeend`);
 
 // =======================================================
 
