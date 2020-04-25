@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbctractComponent from './abstract-component';
 
 const createFooterStatsTemplate = (filmsNumber) => {
   return (
@@ -8,24 +8,13 @@ const createFooterStatsTemplate = (filmsNumber) => {
   );
 };
 
-export default class FooterStats {
+export default class FooterStats extends AbctractComponent {
   constructor(filmsNumber) {
+    super();
     this._filmsNumber = filmsNumber;
-    this._element = null;
   }
 
   getTemplate() {
     return createFooterStatsTemplate(this._filmsNumber);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

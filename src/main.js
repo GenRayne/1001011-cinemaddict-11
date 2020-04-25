@@ -23,6 +23,8 @@ const EXTRA_FILMS_NUMBER = 2;
 const SHOWN_FILMS_NUMBER_AT_START = 5;
 const SHOWN_FILMS_NUMBER_BY_BTN = 5;
 
+const NO_MOVIES_TEXT = `There are no movies in our database`;
+
 const films = generateFilms(FILMS_NUMBER);
 
 let shownFilmsNumber = SHOWN_FILMS_NUMBER_AT_START;
@@ -46,7 +48,7 @@ const filmsContainerElement = new FilmsContainer().getElement();
 const filmsListElement = new FilmsList(filmsContainerElement).getElement();
 
 const isEmpty = !films.length;
-const isEmptyText = isEmpty ? `There are no movies in our database` : undefined;
+const isEmptyText = isEmpty ? NO_MOVIES_TEXT : undefined;
 const filmListHeading = new FilmListHeading(!isEmpty, isEmptyText).getElement();
 
 const filmsSectionElement = new FilmsSection(filmsListElement).getElement();
