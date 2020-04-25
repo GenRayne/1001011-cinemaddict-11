@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {createElement} from '../utils/render';
 
 const ERROR_IF_NEW = `A new component can't be an instance of AbstractComponent. Use 'extends' instead.`;
 const ABSTRACT_METHOD_ERROR = `Abstract method should be implemented.`;

@@ -6,4 +6,8 @@ export default class MoreBtn extends AbctractComponent {
   getTemplate() {
     return createMoreBtnTemplate();
   }
+
+  setClickHandler(handler) {
+    this.getElement().addEventListener(`click`, handler);
+  }
 }

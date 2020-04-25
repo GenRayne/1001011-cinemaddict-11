@@ -12,7 +12,7 @@ import FooterStats from './components/footer-stats';
 import FilmDetails from './components/film-details';
 
 import {RenderPosition, ExtraTitle, Key} from './const';
-import {render} from './utils';
+import {render, remove} from './utils/render';
 import {generateFilms} from './mock/film';
 
 const START_INDEX = 0;
@@ -40,27 +40,27 @@ const topCommented = films.slice().sort((a, b) => {
 
 // =======================================================
 
-const userSectionElement = new UserSection(films).getElement();
-const mainMenuElement = new MainMenu(films).getElement();
-const sortElement = new Sort().getElement();
+const userSectionElement = new UserSection(films);
+const mainMenuElement = new MainMenu(films);
+const sortElement = new Sort();
 
-const filmsContainerElement = new FilmsContainer().getElement();
-const filmsListElement = new FilmsList(filmsContainerElement).getElement();
+const filmsContainerElement = new FilmsContainer();
+const filmsListElement = new FilmsList();
 
 const isEmpty = !films.length;
 const isEmptyText = isEmpty ? NO_MOVIES_TEXT : undefined;
-const filmListHeading = new FilmListHeading(!isEmpty, isEmptyText).getElement();
+const filmListHeading = new FilmListHeading(!isEmpty, isEmptyText);
 
-const filmsSectionElement = new FilmsSection(filmsListElement).getElement();
+const filmsSectionElement = new FilmsSection(filmsListElement);
 
-const filmsTopRatedElement = new FilmsExtra(ExtraTitle.TOP_RATED, topRated).getElement();
-const filmsTopCommentedElement = new FilmsExtra(ExtraTitle.TOP_COMMENTED, topCommented).getElement();
+const filmsTopRatedElement = new FilmsExtra(ExtraTitle.TOP_RATED, topRated);
+const filmsTopCommentedElement = new FilmsExtra(ExtraTitle.TOP_COMMENTED, topCommented);
 
-const filmsTopRatedContainer = new FilmsContainer().getElement();
-const filmsTopCommentedContainer = new FilmsContainer().getElement();
+const filmsTopRatedContainer = new FilmsContainer();
+const filmsTopCommentedContainer = new FilmsContainer();
 
-const moreBtnElement = new MoreBtn().getElement();
-const footerStatsElement = new FooterStats(FILMS_NUMBER).getElement();
+const moreBtnElement = new MoreBtn();
+const footerStatsElement = new FooterStats(FILMS_NUMBER);
 
 // =======================================================
 
@@ -71,31 +71,27 @@ const renderFilm = (filmsListContainer, film) => {
   };
 
   const onCloseBtnClick = () => {
-    filmDetailsElement.remove();
+    remove(filmDetailsElement);
     document.removeEventListener(`keydown`, onEscapePress);
   };
 
   const onEscapePress = (evt) => {
     if (evt.key === Key.ESCAPE) {
-      filmDetailsElement.remove();
+      remove(filmDetailsElement);
       document.removeEventListener(`keydown`, onEscapePress);
     }
   };
 
-  const filmCardElement = new FilmCard(film).getElement();
-  const filmDetailsElement = new FilmDetails(film).getElement();
+  const filmCard = new FilmCard(film);
+  const filmDetails = new FilmDetails(film);
+  const filmDetailsElement = filmDetails.getElement();
 
-  const poster = filmCardElement.querySelector(`.film-card__poster`);
-  const title = filmCardElement.querySelector(`.film-card__title`);
-  const commentsNumber = filmCardElement.querySelector(`.film-card__comments`);
-  const closeBtn = filmDetailsElement.querySelector(`.film-details__close-btn`);
+  filmCard.setElementClickHandler(onPopupOpen, `.film-card__poster`);
+  filmCard.setElementClickHandler(onPopupOpen, `.film-card__title`);
+  filmCard.setElementClickHandler(onPopupOpen, `.film-card__comments`);
+  filmDetails.setCloseBtnClickHandler(onCloseBtnClick);
 
-  poster.addEventListener(`click`, onPopupOpen);
-  title.addEventListener(`click`, onPopupOpen);
-  commentsNumber.addEventListener(`click`, onPopupOpen);
-  closeBtn.addEventListener(`click`, onCloseBtnClick);
-
-  render(filmsListContainer, filmCardElement, RenderPosition.BEFOREEND);
+  render(filmsListContainer.getElement(), filmCard, RenderPosition.BEFOREEND);
 };
 
 const renderFilms = (filmsContainer, filmsList, fromIndex, toIndex) => {
@@ -106,25 +102,25 @@ const renderFilms = (filmsContainer, filmsList, fromIndex, toIndex) => {
 
 const renderFilmSection = () => {
   render(siteMainElement, filmsSectionElement, RenderPosition.BEFOREEND);
-  render(filmsSectionElement, filmsListElement, RenderPosition.BEFOREEND);
+  render(filmsSectionElement.getElement(), filmsListElement, RenderPosition.BEFOREEND);
 
+  render(filmsListElement.getElement(), filmListHeading, RenderPosition.AFTERBEGIN);
   if (!films.length) {
-    render(filmsListElement, filmListHeading, RenderPosition.AFTERBEGIN);
     return;
   }
 
   renderFilms(filmsContainerElement, films, START_INDEX, SHOWN_FILMS_NUMBER_AT_START);
-  render(filmsListElement, filmsContainerElement, RenderPosition.BEFOREEND);
+  render(filmsListElement.getElement(), filmsContainerElement, RenderPosition.BEFOREEND);
 
-  render(filmsListElement, moreBtnElement, RenderPosition.BEFOREEND);
+  render(filmsListElement.getElement(), moreBtnElement, RenderPosition.BEFOREEND);
 
   renderFilms(filmsTopRatedContainer, topRated, START_INDEX);
   renderFilms(filmsTopCommentedContainer, topCommented, START_INDEX);
 
-  render(filmsTopRatedElement, filmsTopRatedContainer, RenderPosition.BEFOREEND);
-  render(filmsTopCommentedElement, filmsTopCommentedContainer, RenderPosition.BEFOREEND);
-  render(filmsSectionElement, filmsTopRatedElement, RenderPosition.BEFOREEND);
-  render(filmsSectionElement, filmsTopCommentedElement, RenderPosition.BEFOREEND);
+  render(filmsTopRatedElement.getElement(), filmsTopRatedContainer, RenderPosition.BEFOREEND);
+  render(filmsTopCommentedElement.getElement(), filmsTopCommentedContainer, RenderPosition.BEFOREEND);
+  render(filmsSectionElement.getElement(), filmsTopRatedElement, RenderPosition.BEFOREEND);
+  render(filmsSectionElement.getElement(), filmsTopCommentedElement, RenderPosition.BEFOREEND);
 };
 
 const renderPage = () => {
@@ -148,13 +144,13 @@ renderPage();
 
 // =======================================================
 
-moreBtnElement.addEventListener(`click`, () => {
+moreBtnElement.setClickHandler(() => {
   const prevShownFilmsNumber = shownFilmsNumber;
   shownFilmsNumber += SHOWN_FILMS_NUMBER_BY_BTN;
 
   renderFilms(filmsContainerElement, films, prevShownFilmsNumber, shownFilmsNumber);
 
   if (shownFilmsNumber >= films.length) {
-    moreBtnElement.remove();
+    remove(moreBtnElement.getElement());
   }
 });

@@ -72,4 +72,9 @@ export default class FilmCard extends AbctractComponent {
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
+
+  setElementClickHandler(handler, selector) {
+    this.getElement().querySelector(selector)
+      .addEventListener(`click`, handler);
+  }
 }

@@ -4,7 +4,7 @@ import {
   formatTime,
   formatLongDate,
   isChecked,
-} from '../utils';
+} from '../utils/common';
 import AbctractComponent from './abstract-component';
 
 const createFilmDetailsTemplate = (film) => {
@@ -199,5 +199,10 @@ export default class FilmDetails extends AbctractComponent {
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
+  }
+
+  setCloseBtnClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, handler);
   }
 }

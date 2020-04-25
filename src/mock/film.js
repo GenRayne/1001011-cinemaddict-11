@@ -4,7 +4,7 @@ import {
   getRandomArrayItem,
   getRandomDate,
   getRandomArrayFromArray,
-} from '../utils';
+} from '../utils/common';
 import {EMOJIS} from '../const';
 
 const MIN_SENTENCES_NUMBER = 1;
