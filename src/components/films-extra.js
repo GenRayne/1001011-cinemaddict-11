@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbctractComponent from './abstract-component';
 
 const createFilmsExtraTemplate = (heading) => {
   return (
@@ -8,25 +8,14 @@ const createFilmsExtraTemplate = (heading) => {
   );
 };
 
-export default class FilmsExtra {
+export default class FilmsExtra extends AbctractComponent {
   constructor(heading, films) {
+    super();
     this._films = films;
     this._heading = heading;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmsExtraTemplate(this._heading, this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

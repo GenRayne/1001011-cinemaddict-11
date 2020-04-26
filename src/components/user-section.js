@@ -1,5 +1,5 @@
 import {UserRating, RatingStep} from '../const';
-import {createElement} from '../utils';
+import AbctractComponent from './abstract-component';
 
 const createUserSectionTemplate = (films) => {
   const filmsWatched = films.filter((film) => {
@@ -25,24 +25,13 @@ const createUserSectionTemplate = (films) => {
   );
 };
 
-export default class UserSection {
+export default class UserSection extends AbctractComponent {
   constructor(films) {
+    super();
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createUserSectionTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
