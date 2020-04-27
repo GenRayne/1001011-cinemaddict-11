@@ -57,67 +57,64 @@ const renderFilms = (filmsContainer, filmsList, fromIndex, toIndex) => {
   });
 };
 
-const renderFilmSection = (container, films, topRated, topCommented) => {
-  const filmsContainerElement = new FilmsContainer();
-  const filmsListElement = new FilmsList();
-
-  const isEmpty = !films.length;
-  const isEmptyText = isEmpty ? NO_MOVIES_TEXT : undefined;
-  const filmListHeading = new FilmListHeading(!isEmpty, isEmptyText);
-
-  const filmsSectionElement = new FilmsSection(filmsListElement);
-
-  const filmsTopRatedElement = new FilmsExtra(ExtraTitle.TOP_RATED, topRated);
-  const filmsTopCommentedElement = new FilmsExtra(ExtraTitle.TOP_COMMENTED, topCommented);
-
-  const filmsTopRatedContainer = new FilmsContainer();
-  const filmsTopCommentedContainer = new FilmsContainer();
-
-  const moreBtnElement = new MoreBtn();
-
-  render(container, filmsSectionElement, RenderPosition.BEFOREEND);
-  render(filmsSectionElement.getElement(), filmsListElement, RenderPosition.BEFOREEND);
-
-  render(filmsListElement.getElement(), filmListHeading, RenderPosition.AFTERBEGIN);
-  if (!films.length) {
-    return;
-  }
-
-  renderFilms(filmsContainerElement, films, START_INDEX, SHOWN_FILMS_NUMBER_AT_START);
-  render(filmsListElement.getElement(), filmsContainerElement, RenderPosition.BEFOREEND);
-
-  render(filmsListElement.getElement(), moreBtnElement, RenderPosition.BEFOREEND);
-
-  renderFilms(filmsTopRatedContainer, topRated, START_INDEX);
-  renderFilms(filmsTopCommentedContainer, topCommented, START_INDEX);
-
-  render(filmsTopRatedElement.getElement(), filmsTopRatedContainer, RenderPosition.BEFOREEND);
-  render(filmsTopCommentedElement.getElement(), filmsTopCommentedContainer, RenderPosition.BEFOREEND);
-  render(filmsSectionElement.getElement(), filmsTopRatedElement, RenderPosition.BEFOREEND);
-  render(filmsSectionElement.getElement(), filmsTopCommentedElement, RenderPosition.BEFOREEND);
-
-  // -----------------------------------
-
-  moreBtnElement.setClickHandler(() => {
-    const prevShownFilmsNumber = shownFilmsNumber;
-    shownFilmsNumber += SHOWN_FILMS_NUMBER_BY_BTN;
-
-    renderFilms(filmsContainerElement, films, prevShownFilmsNumber, shownFilmsNumber);
-
-    if (shownFilmsNumber >= films.length) {
-      remove(moreBtnElement.getElement());
-    }
-  });
-};
-
 // =======================================================
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, films, topRated, topCommented) {
     this._container = container;
+
+    this._filmsContainerElement = new FilmsContainer();
+    this._filmsListElement = new FilmsList();
+
+    this._isEmpty = !films.length;
+    this._isEmptyText = this._isEmpty ? NO_MOVIES_TEXT : undefined;
+    this._filmListHeading = new FilmListHeading(!this._isEmpty, this._isEmptyText);
+
+    this._filmsSectionElement = new FilmsSection(this._filmsListElement);
+
+    this._filmsTopRatedElement = new FilmsExtra(ExtraTitle.TOP_RATED, topRated);
+    this._filmsTopCommentedElement = new FilmsExtra(ExtraTitle.TOP_COMMENTED, topCommented);
+
+    this._filmsTopRatedContainer = new FilmsContainer();
+    this._filmsTopCommentedContainer = new FilmsContainer();
+
+    this._moreBtnElement = new MoreBtn();
   }
 
   render(films, topRated, topCommented) {
-    renderFilmSection(this._container, films, topRated, topCommented);
+
+    render(this._container, this._filmsSectionElement, RenderPosition.BEFOREEND);
+    render(this._filmsSectionElement.getElement(), this._filmsListElement, RenderPosition.BEFOREEND);
+
+    render(this._filmsListElement.getElement(), this._filmListHeading, RenderPosition.AFTERBEGIN);
+    if (!films.length) {
+      return;
+    }
+
+    renderFilms(this._filmsContainerElement, films, START_INDEX, SHOWN_FILMS_NUMBER_AT_START);
+    render(this._filmsListElement.getElement(), this._filmsContainerElement, RenderPosition.BEFOREEND);
+
+    render(this._filmsListElement.getElement(), this._moreBtnElement, RenderPosition.BEFOREEND);
+
+    renderFilms(this._filmsTopRatedContainer, topRated, START_INDEX);
+    renderFilms(this._filmsTopCommentedContainer, topCommented, START_INDEX);
+
+    render(this._filmsTopRatedElement.getElement(), this._filmsTopRatedContainer, RenderPosition.BEFOREEND);
+    render(this._filmsTopCommentedElement.getElement(), this._filmsTopCommentedContainer, RenderPosition.BEFOREEND);
+    render(this._filmsSectionElement.getElement(), this._filmsTopRatedElement, RenderPosition.BEFOREEND);
+    render(this._filmsSectionElement.getElement(), this._filmsTopCommentedElement, RenderPosition.BEFOREEND);
+
+    // -----------------------------------
+
+    this._moreBtnElement.setClickHandler(() => {
+      const prevShownFilmsNumber = shownFilmsNumber;
+      shownFilmsNumber += SHOWN_FILMS_NUMBER_BY_BTN;
+
+      renderFilms(this._filmsContainerElement, films, prevShownFilmsNumber, shownFilmsNumber);
+
+      if (shownFilmsNumber >= films.length) {
+        remove(this._moreBtnElement.getElement());
+      }
+    });
   }
 }

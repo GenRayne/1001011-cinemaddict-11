@@ -35,7 +35,7 @@ const mainMenuElement = new MainMenu(films);
 const sortElement = new Sort();
 const footerStatsElement = new FooterStats(FILMS_NUMBER);
 
-const filmSection = new PageController(siteMainElement);
+const filmSection = new PageController(siteMainElement, films, topRated, topCommented);
 
 const renderPage = () => {
   render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
