@@ -1,8 +1,8 @@
-import AbctractComponent from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 const createMoreBtnTemplate = () => `<button class="films-list__show-more">Show more</button>`;
 
-export default class MoreBtn extends AbctractComponent {
+export default class MoreBtn extends AbstractComponent {
   getTemplate() {
     return createMoreBtnTemplate();
   }

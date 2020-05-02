@@ -1,4 +1,4 @@
-import AbctractComponent from './abstract-component';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const DESCRIPTION_LENGTH = 140;
 
@@ -74,7 +74,7 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCard extends AbctractComponent {
+export default class FilmCard extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;

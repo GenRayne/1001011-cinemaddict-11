@@ -1,4 +1,4 @@
-import AbctractComponent from './abstract-component';
+import AbstractComponent from './abstract-component';
 import {filterToNavItemName, MoviesFilter} from '../const';
 
 const DEFAULT_HEADING = `${filterToNavItemName[MoviesFilter.ALL]}. Upcoming`;
@@ -8,7 +8,7 @@ const createFilmListHeadingTemplate = (isHidden = true, heading = DEFAULT_HEADIN
   return `<h2 class="${classlist}">${heading}</h2>`;
 };
 
-export default class FilmListHeading extends AbctractComponent {
+export default class FilmListHeading extends AbstractComponent {
   constructor(isHidden, heading) {
     super();
     this._isHidden = isHidden;

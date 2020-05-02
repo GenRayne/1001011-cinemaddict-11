@@ -70,7 +70,7 @@ export default class PageController {
       .concat(newData)
       .concat(this._films.slice(index + 1));
 
-    this._shownMovieControllers[index].replace(newData);
+    this._shownMovieControllers[index].render(newData);
   }
 
   _renderLoadMoreBtn() {

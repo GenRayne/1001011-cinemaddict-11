@@ -20,9 +20,15 @@ export default class MovieController {
     this._onWatchlistIconClick = this._onWatchlistIconClick.bind(this);
     this._onWatchedIconClick = this._onWatchedIconClick.bind(this);
     this._onFavouriteIconClick = this._onFavouriteIconClick.bind(this);
+
+    this._onWatchlistBtnClick = this._onWatchlistBtnClick.bind(this);
+    this._onWatchedBtnClick = this._onWatchedBtnClick.bind(this);
+    this._onFavouriteBtnClick = this._onFavouriteBtnClick.bind(this);
   }
 
   render(film) {
+    const oldFilmComponent = this._filmComponent;
+
     this._film = film;
     this._filmComponent = new FilmCard(this._film);
     this._filmDetailsComponent = new FilmDetails(this._film);
@@ -36,12 +42,15 @@ export default class MovieController {
     this._filmComponent.setWatchedIconClickHandler(this._onWatchedIconClick);
     this._filmComponent.setFavouriteIconClickHandler(this._onFavouriteIconClick);
 
-    render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
-  }
+    this._filmDetailsComponent.setWatchlistBtnClickHandler(this._onWatchlistBtnClick);
+    this._filmDetailsComponent.setWatchedBtnClickHandler(this._onWatchedBtnClick);
+    this._filmDetailsComponent.setFavouriteBtnClickHandler(this._onFavouriteBtnClick);
 
-  replace(newFilmData) {
-    const newFilmComponent = new FilmCard(newFilmData);
-    replace(newFilmComponent, this._filmComponent);
+    if (oldFilmComponent) {
+      replace(this._filmComponent, oldFilmComponent);
+    } else {
+      render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   _onEscapePress(evt) {
@@ -69,6 +78,14 @@ export default class MovieController {
     });
     this._onDataChange(oldFilmData, newFilmData);
   }
+  _onWatchlistBtnClick() {
+    const oldFilmData = this._film;
+    const newFilmData = Object.assign({}, this._film, {
+      isInWatchlist: !this._film.isInWatchlist
+    });
+    this._onDataChange(oldFilmData, newFilmData);
+    this._filmDetailsComponent.rerender();
+  }
 
   _onWatchedIconClick(evt) {
     evt.preventDefault();
@@ -78,6 +95,14 @@ export default class MovieController {
     });
     this._onDataChange(oldFilmData, newFilmData);
   }
+  _onWatchedBtnClick() {
+    const oldFilmData = this._film;
+    const newFilmData = Object.assign({}, this._film, {
+      isWatched: !this._film.isWatched
+    });
+    this._onDataChange(oldFilmData, newFilmData);
+    this._filmDetailsComponent.rerender();
+  }
 
   _onFavouriteIconClick(evt) {
     evt.preventDefault();
@@ -86,5 +111,13 @@ export default class MovieController {
       isFavourite: !this._film.isFavourite
     });
     this._onDataChange(oldFilmData, newFilmData);
+  }
+  _onFavouriteBtnClick() {
+    const oldFilmData = this._film;
+    const newFilmData = Object.assign({}, this._film, {
+      isFavourite: !this._film.isFavourite
+    });
+    this._onDataChange(oldFilmData, newFilmData);
+    this._filmDetailsComponent.rerender();
   }
 }
