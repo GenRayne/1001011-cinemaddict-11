@@ -14,18 +14,18 @@ const SHOWN_FILMS_NUMBER_BY_BTN = 5;
 
 const NO_MOVIES_TEXT = `There are no movies in our database`;
 
-// =======================================================
+// =============================================================
 
-const renderFilms = (filmsContainer, filmsList, onDataChange) => {
+const renderFilms = (filmsContainer, filmsList, onDataChange, onViewChange) => {
   return filmsList.map((film) => {
-    const movieController = new MovieController(filmsContainer, onDataChange);
+    const movieController = new MovieController(filmsContainer, onDataChange, onViewChange);
     movieController.render(film);
 
     return movieController;
   });
 };
 
-// =======================================================
+// =============================================================
 
 export default class PageController {
   constructor(container, films, topRated, topCommented) {
@@ -58,6 +58,8 @@ export default class PageController {
     this._onDataChange = this._onDataChange.bind(this);
   }
 
+  // --------------------------------------------------------------
+
   _onDataChange(oldData, newData) {
     const index = this._films.findIndex((film) => film === oldData);
 
@@ -73,6 +75,14 @@ export default class PageController {
     this._shownMovieControllers[index].render(newData);
   }
 
+  _onViewChange() {
+    this._shownMovieControllers.forEach((item) => {
+      item._onViewChange();
+    });
+  }
+
+  // --------------------------------------------------------------
+
   _renderLoadMoreBtn() {
     if (this._shownFilmsNumber >= this._films.length) {
       return;
@@ -86,7 +96,8 @@ export default class PageController {
       const moreFilms = renderFilms(
           this._filmsContainer.getElement(),
           this._films.slice(prevShownFilmsNumber, this._shownFilmsNumber),
-          this._onDataChange
+          this._onDataChange,
+          this._onViewChange
       );
       this._shownMovieControllers = this._shownMovieControllers.concat(moreFilms);
 
@@ -95,6 +106,8 @@ export default class PageController {
       }
     });
   }
+
+  // --------------------------------------------------------------
 
   render(films, topRated, topCommented) {
     this._films = films;
@@ -110,7 +123,8 @@ export default class PageController {
     const newFilms = renderFilms(
         this._filmsContainer.getElement(),
         this._films.slice(START_INDEX, SHOWN_FILMS_NUMBER_AT_START),
-        this._onDataChange
+        this._onDataChange,
+        this._onViewChange
     );
 
     this._shownMovieControllers = this._shownMovieControllers.concat(newFilms);
@@ -121,13 +135,15 @@ export default class PageController {
     this._shownTopRatedMovieControllers = renderFilms(
         this._filmsTopRatedContainer.getElement(),
         topRated,
-        this._onDataChange
+        this._onDataChange,
+        this._onViewChange
     );
 
     this._shownTopCommentedMovieControllers = renderFilms(
         this._filmsTopCommentedContainer.getElement(),
         topCommented,
-        this._onDataChange
+        this._onDataChange,
+        this._onViewChange
     );
 
     render(this._filmsTopRated.getElement(), this._filmsTopRatedContainer, RenderPosition.BEFOREEND);

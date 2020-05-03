@@ -7,6 +7,8 @@ import {
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 
+const SELECTED_EMOJI_MARKUP = `<img width="55" height="55">`;
+
 const createFilmDetailsTemplate = (film) => {
   const {
     title,
@@ -191,6 +193,8 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
+// ================================================================================
+
 export default class FilmDetails extends AbstractSmartComponent {
   constructor(film) {
     super();
@@ -211,6 +215,14 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setWatchedBtnClickHandler(this._watchedBtnClickHandler);
     this.setFavouriteBtnClickHandler(this._favouriteBtnClickHandler);
   }
+
+  getEmojiPlacement() {
+    const emojiDiv = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    emojiDiv.innerHTML = SELECTED_EMOJI_MARKUP;
+    return emojiDiv.firstElementChild;
+  }
+
+  // ------------------------------- Слушатели -------------------------------
 
   setCloseBtnClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
@@ -238,5 +250,14 @@ export default class FilmDetails extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
 
     this._favouriteBtnClickHandler = handler;
+  }
+
+  setEmojiClickHandler(handler) {
+    const emojis = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
+
+    emojis.forEach((item) => {
+      item.addEventListener(`click`, handler);
+    });
+
   }
 }
