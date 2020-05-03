@@ -1,4 +1,4 @@
-import AbctractComponent from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 const createFilmsExtraTemplate = (heading) => {
   return (
@@ -8,7 +8,7 @@ const createFilmsExtraTemplate = (heading) => {
   );
 };
 
-export default class FilmsExtra extends AbctractComponent {
+export default class FilmsExtra extends AbstractComponent {
   constructor(heading, films) {
     super();
     this._films = films;

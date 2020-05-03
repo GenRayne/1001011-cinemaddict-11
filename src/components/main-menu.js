@@ -1,5 +1,5 @@
 import {MoviesFilter, filterToNavItemName} from '../const';
-import AbctractComponent from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 const filmsCount = (name, count) => {
   return (name !== MoviesFilter.ALL) ?
@@ -59,7 +59,7 @@ const createMainMenuTemplate = (films) => {
   );
 };
 
-export default class MainMenu extends AbctractComponent {
+export default class MainMenu extends AbstractComponent {
   constructor(films) {
     super();
     this._films = films;

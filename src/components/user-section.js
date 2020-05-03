@@ -1,5 +1,5 @@
 import {UserRating, RatingStep} from '../const';
-import AbctractComponent from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 const createUserSectionTemplate = (films) => {
   const filmsWatched = films.filter((film) => {
@@ -25,7 +25,7 @@ const createUserSectionTemplate = (films) => {
   );
 };
 
-export default class UserSection extends AbctractComponent {
+export default class UserSection extends AbstractComponent {
   constructor(films) {
     super();
     this._films = films;

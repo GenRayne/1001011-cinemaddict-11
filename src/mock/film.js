@@ -7,6 +7,8 @@ import {
 } from '../utils/common';
 import {EMOJIS} from '../const';
 
+const MAX_ID = 999;
+
 const MIN_SENTENCES_NUMBER = 1;
 const MAX_SENTENCES_NUMBER = 5;
 
@@ -149,6 +151,7 @@ const generateFilm = () => {
   const durationMinutes = `${getRandomInteger(MAX_DURATION_M, MIN_DURATION_M)}m`;
 
   return {
+    id: getRandomInteger(MAX_ID),
     title: FILM_TITLES[randomIndex],
     posterSrc: POSTER_SRCS[randomIndex],
     description: getDesriptionSentences(sentencesNumber).join(` `),

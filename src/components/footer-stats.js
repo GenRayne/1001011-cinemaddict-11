@@ -1,4 +1,4 @@
-import AbctractComponent from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 const createFooterStatsTemplate = (filmsNumber) => {
   return (
@@ -8,7 +8,7 @@ const createFooterStatsTemplate = (filmsNumber) => {
   );
 };
 
-export default class FooterStats extends AbctractComponent {
+export default class FooterStats extends AbstractComponent {
   constructor(filmsNumber) {
     super();
     this._filmsNumber = filmsNumber;

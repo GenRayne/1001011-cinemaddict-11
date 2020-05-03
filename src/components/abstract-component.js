@@ -1,11 +1,11 @@
 import {createElement} from '../utils/render';
 
 const ERROR_IF_NEW = `A new component can't be an instance of AbstractComponent. Use 'extends' instead.`;
-const ABSTRACT_METHOD_ERROR = `Abstract method should be implemented.`;
+const ABSTRACT_METHOD_ERROR = `Abstract method should be implemented: getTemplate.`;
 
-export default class AbctractComponent {
+export default class AbstractComponent {
   constructor() {
-    if (new.target === AbctractComponent) {
+    if (new.target === AbstractComponent) {
       throw new Error(ERROR_IF_NEW);
     }
     this._element = null;

@@ -5,7 +5,9 @@ import {
   formatLongDate,
   isChecked,
 } from '../utils/common';
-import AbctractComponent from './abstract-component';
+import AbstractSmartComponent from './abstract-smart-component';
+
+const SELECTED_EMOJI_MARKUP = `<img width="55" height="55">`;
 
 const createFilmDetailsTemplate = (film) => {
   const {
@@ -191,7 +193,9 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
-export default class FilmDetails extends AbctractComponent {
+// ================================================================================
+
+export default class FilmDetails extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
@@ -201,8 +205,59 @@ export default class FilmDetails extends AbctractComponent {
     return createFilmDetailsTemplate(this._film);
   }
 
+  rerender() {
+    super.rerender(this);
+  }
+
+  recoverListeners() {
+    this.setCloseBtnClickHandler(this._closeBtnClickHandler);
+    this.setWatchlistBtnClickHandler(this._watchlistBtnClickHandler);
+    this.setWatchedBtnClickHandler(this._watchedBtnClickHandler);
+    this.setFavouriteBtnClickHandler(this._favouriteBtnClickHandler);
+  }
+
+  getEmojiPlacement() {
+    const emojiDiv = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    emojiDiv.innerHTML = SELECTED_EMOJI_MARKUP;
+    return emojiDiv.firstElementChild;
+  }
+
+  // ------------------------------- Слушатели -------------------------------
+
   setCloseBtnClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, handler);
+
+    this._closeBtnClickHandler = handler;
+  }
+
+  setWatchlistBtnClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--watchlist`)
+      .addEventListener(`click`, handler);
+
+    this._watchlistBtnClickHandler = handler;
+  }
+
+  setWatchedBtnClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, handler);
+
+    this._watchedBtnClickHandler = handler;
+  }
+
+  setFavouriteBtnClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__control-label--favorite`)
+      .addEventListener(`click`, handler);
+
+    this._favouriteBtnClickHandler = handler;
+  }
+
+  setEmojiClickHandler(handler) {
+    const emojis = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
+
+    emojis.forEach((item) => {
+      item.addEventListener(`click`, handler);
+    });
+
   }
 }

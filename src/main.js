@@ -2,13 +2,13 @@ import UserSection from './components/user-section';
 import MainMenu from './components/main-menu';
 import Sort from './components/sort';
 import FooterStats from './components/footer-stats';
-import PageController from './controllers/page-controller';
+import PageController from './controllers/page';
 
 import {RenderPosition, START_INDEX} from './const';
 import {render} from './utils/render';
 import {generateFilms} from './mock/film';
 
-const FILMS_NUMBER = 27;
+const FILMS_NUMBER = 17;
 const EXTRA_FILMS_NUMBER = 2;
 
 const films = generateFilms(FILMS_NUMBER);
@@ -35,7 +35,7 @@ const mainMenuElement = new MainMenu(films);
 const sortElement = new Sort();
 const footerStatsElement = new FooterStats(FILMS_NUMBER);
 
-const filmSection = new PageController(siteMainElement);
+const filmSection = new PageController(siteMainElement, films, topRated, topCommented);
 
 const renderPage = () => {
   render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
