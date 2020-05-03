@@ -28,6 +28,7 @@ export default class MovieController {
 
   render(film) {
     const oldFilmComponent = this._filmComponent;
+    const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._film = film;
     this._filmComponent = new FilmCard(this._film);
@@ -48,6 +49,7 @@ export default class MovieController {
 
     if (oldFilmComponent) {
       replace(this._filmComponent, oldFilmComponent);
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
     } else {
       render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
     }
@@ -84,7 +86,6 @@ export default class MovieController {
       isInWatchlist: !this._film.isInWatchlist
     });
     this._onDataChange(oldFilmData, newFilmData);
-    this._filmDetailsComponent.rerender();
   }
 
   _onWatchedIconClick(evt) {
@@ -101,7 +102,6 @@ export default class MovieController {
       isWatched: !this._film.isWatched
     });
     this._onDataChange(oldFilmData, newFilmData);
-    this._filmDetailsComponent.rerender();
   }
 
   _onFavouriteIconClick(evt) {
@@ -118,6 +118,5 @@ export default class MovieController {
       isFavourite: !this._film.isFavourite
     });
     this._onDataChange(oldFilmData, newFilmData);
-    this._filmDetailsComponent.rerender();
   }
 }
