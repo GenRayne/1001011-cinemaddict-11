@@ -1,5 +1,12 @@
 export const START_INDEX = 0;
 
+export const AbstractComponentError = {
+  NEW: `A new component can't be an instance of AbstractComponent. Use 'extends' instead.`,
+  // Метод ниже в CamelCase, т.к. иначе при вызове ошибка линтера:
+  // "A function with a name starting with an uppercase letter should only be used as a constructor".
+  methodNotImplemented: (methodName) => `Abstract method should be implemented: ${methodName}.`
+};
+
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,

@@ -13,14 +13,13 @@ const EXTRA_FILMS_NUMBER = 2;
 
 const films = generateFilms(FILMS_NUMBER);
 
-const topRated = films.slice().sort((a, b) => {
-  return b.rating - a.rating;
-}).slice(START_INDEX, EXTRA_FILMS_NUMBER);
+const topRated = films.slice()
+  .sort((a, b) => b.rating - a.rating)
+  .slice(START_INDEX, EXTRA_FILMS_NUMBER);
 
-const topCommented = films.slice().sort((a, b) => {
-  return b.comments.length - a.comments.length;
-})
-.slice(START_INDEX, EXTRA_FILMS_NUMBER);
+const topCommented = films.slice()
+  .sort((a, b) => b.comments.length - a.comments.length)
+  .slice(START_INDEX, EXTRA_FILMS_NUMBER);
 
 // =======================================================
 

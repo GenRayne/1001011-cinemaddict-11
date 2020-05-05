@@ -60,8 +60,15 @@ export default class PageController {
 
   // --------------------------------------------------------------
 
+  _findAndRenderController(controllers, oldData, newData) {
+    const controller = controllers.find(({_film}) => _film.id === oldData.id);
+    if (controller) {
+      controller.render(newData);
+    }
+  }
+
   _onDataChange(oldData, newData) {
-    const index = this._films.findIndex((film) => film === oldData);
+    const index = this._films.findIndex((film) => film.id === oldData.id);
 
     if (index === -1) {
       return;
@@ -72,7 +79,9 @@ export default class PageController {
       .concat(newData)
       .concat(this._films.slice(index + 1));
 
-    this._shownMovieControllers[index].render(newData);
+    this._findAndRenderController(this._shownMovieControllers, oldData, newData);
+    this._findAndRenderController(this._shownTopRatedMovieControllers, oldData, newData);
+    this._findAndRenderController(this._shownTopCommentedMovieControllers, oldData, newData);
   }
 
   _onViewChange() {
