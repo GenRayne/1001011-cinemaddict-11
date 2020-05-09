@@ -1,30 +1,21 @@
+import moment from "moment";
+
 export const isChecked = (isTrue) => isTrue ? `checked` : ``;
 
 // ================= Время / дата =================
 
-export const castTimeFormat = (value) => String(value).padStart(2, `0`);
+export const formatTime = (date) => moment(date).format(`HH:mm`);
 
-export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
+export const formatDate = (date) => moment(date).format(`YYYY/MM/DD`);
 
-  return `${hours}:${minutes}`;
-};
+export const formatLongDate = (date) => moment(date).format(`D MMMM YYYY`);
 
-export const formatDate = (date) => {
-  const month = castTimeFormat(date.getMonth());
-  const day = castTimeFormat(date.getDate());
+export const getDateFromNow = (date) => moment(date).fromNow();
 
-  return `${date.getFullYear()}/${month}/${day}`;
-};
-
-export const formatLongDate = (date) => {
-  const formatter = new Intl.DateTimeFormat(`en-US`, {
-    year: `numeric`,
-    month: `long`,
-  });
-
-  return formatter.format(date);
+export const getDuration = (minutes) => {
+  const hours = moment.duration(minutes, `minutes`).hours();
+  const minutesLeft = minutes % 60;
+  return hours ? `${hours}h ${minutesLeft}m` : `${minutes}m`;
 };
 
 // ============== Случайные значения ==============

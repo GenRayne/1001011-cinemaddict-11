@@ -1,9 +1,9 @@
 import {EMOJIS} from '../const';
 import {
-  formatDate,
-  formatTime,
   formatLongDate,
+  getDateFromNow,
   isChecked,
+  getDuration
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 
@@ -29,7 +29,9 @@ const createFilmDetailsTemplate = (film) => {
     comments,
   } = film;
 
-  const dateOfRelease = `${releaseDate.getDate()} ${formatLongDate(releaseDate)}`;
+  const dateOfRelease = `${formatLongDate(releaseDate)}`;
+  const filmDuration = getDuration(duration);
+
   const filmWriters = writers.join(`, `);
   const filmActors = actors.join(`, `);
 
@@ -44,7 +46,7 @@ const createFilmDetailsTemplate = (film) => {
       date,
     } = comment;
 
-    const commentDate = `${formatDate(date)} ${formatTime(date)}`;
+    const commentDate = `${getDateFromNow(date)}`;
 
     return (
       `<li class="film-details__comment">
@@ -115,7 +117,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${filmDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
