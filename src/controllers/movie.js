@@ -8,6 +8,12 @@ const Mode = {
   DETAILED: `detailed`
 };
 
+const MovieState = {
+  WATCHLIST: `isInWatchlist`,
+  WATCHED: `isWatched`,
+  FAVOURITE: `isFavourite`
+};
+
 const bodyElement = document.querySelector(`body`);
 
 export default class MovieController {
@@ -52,30 +58,20 @@ export default class MovieController {
 
   render(film) {
     const oldFilmComponent = this._filmComponent;
-    const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._film = film;
     this._filmComponent = new FilmCard(this._film);
-    this._filmDetailsComponent = new FilmDetails(this._film);
 
-    this._filmComponent.setElementClickHandler(this._onPopupOpen, `.film-card__poster`);
-    this._filmComponent.setElementClickHandler(this._onPopupOpen, `.film-card__title`);
-    this._filmComponent.setElementClickHandler(this._onPopupOpen, `.film-card__comments`);
-    this._filmDetailsComponent.setCloseBtnClickHandler(this._onCloseBtnClick);
+    this._filmComponent.setPosterClickHandler(this._onPopupOpen);
+    this._filmComponent.setTitleClickHandler(this._onPopupOpen);
+    this._filmComponent.setCommentsClickHandler(this._onPopupOpen);
 
     this._filmComponent.setWatchlistIconClickHandler(this._onWatchlistIconClick);
     this._filmComponent.setWatchedIconClickHandler(this._onWatchedIconClick);
     this._filmComponent.setFavouriteIconClickHandler(this._onFavouriteIconClick);
 
-    this._filmDetailsComponent.setWatchlistBtnClickHandler(this._onWatchlistBtnClick);
-    this._filmDetailsComponent.setWatchedBtnClickHandler(this._onWatchedBtnClick);
-    this._filmDetailsComponent.setFavouriteBtnClickHandler(this._onFavouriteBtnClick);
-
-    this._filmDetailsComponent.setEmojiClickHandler(this._onEmojiSelect);
-
     if (oldFilmComponent) {
       replace(this._filmComponent, oldFilmComponent);
-      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
     } else {
       render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
     }
@@ -91,9 +87,25 @@ export default class MovieController {
   }
 
   _onPopupOpen() {
-    bodyElement.append(this._filmDetailsComponent.getElement());
-    document.addEventListener(`keydown`, this._onEscapePress);
     this._mode = Mode.DETAILED;
+
+    const oldFilmDetailsComponent = this._filmDetailsComponent;
+
+    this._filmDetailsComponent = new FilmDetails(this._film);
+    this._filmDetailsComponent.setCloseBtnClickHandler(this._onCloseBtnClick);
+
+    this._filmDetailsComponent.setWatchlistBtnClickHandler(this._onWatchlistBtnClick);
+    this._filmDetailsComponent.setWatchedBtnClickHandler(this._onWatchedBtnClick);
+    this._filmDetailsComponent.setFavouriteBtnClickHandler(this._onFavouriteBtnClick);
+
+    this._filmDetailsComponent.setEmojiClickHandler(this._onEmojiSelect);
+
+    if (oldFilmDetailsComponent) {
+      replace(this._filmDetailsComponent, oldFilmDetailsComponent);
+    }
+    bodyElement.append(this._filmDetailsComponent.getElement());
+
+    document.addEventListener(`keydown`, this._onEscapePress);
   }
 
   _onCloseBtnClick() {
@@ -115,48 +127,49 @@ export default class MovieController {
     this._selectedEmojiPlacement.alt = `emoji-${emojiName}`;
   }
 
-  // ----------------------- К просмотру -----------------------
+  // -----------------------------------------------------------
 
-  _onWatchlistIconClick(evt) {
-    evt.preventDefault();
+  _updateFilmData(key, value) {
     const oldFilmData = this._film;
     const newFilmData = Object.assign({}, this._film, {
-      isInWatchlist: !this._film.isInWatchlist
+      [key]: value
     });
     this._onDataChange(oldFilmData, newFilmData);
   }
 
+  // ----------------------- К просмотру -----------------------
+
+  _onWatchlistIconClick(evt) {
+    evt.preventDefault();
+    this._updateFilmData(MovieState.WATCHLIST, !this._film.isInWatchlist);
+  }
+
   _onWatchlistBtnClick() {
     this._film.isInWatchlist = !this._film.isInWatchlist;
+    this.render(this._film);
   }
 
   // ----------------------- Просмотрено -----------------------
 
   _onWatchedIconClick(evt) {
     evt.preventDefault();
-    const oldFilmData = this._film;
-    const newFilmData = Object.assign({}, this._film, {
-      isWatched: !this._film.isWatched
-    });
-    this._onDataChange(oldFilmData, newFilmData);
+    this._updateFilmData(MovieState.WATCHED, !this._film.isWatched);
   }
 
   _onWatchedBtnClick() {
     this._film.isWatched = !this._film.isWatched;
+    this.render(this._film);
   }
 
   // ----------------------- Избранное -----------------------
 
   _onFavouriteIconClick(evt) {
     evt.preventDefault();
-    const oldFilmData = this._film;
-    const newFilmData = Object.assign({}, this._film, {
-      isFavourite: !this._film.isFavourite
-    });
-    this._onDataChange(oldFilmData, newFilmData);
+    this._updateFilmData(MovieState.FAVOURITE, !this._film.isFavourite);
   }
 
   _onFavouriteBtnClick() {
     this._film.isFavourite = !this._film.isFavourite;
+    this.render(this._film);
   }
 }

@@ -1,10 +1,11 @@
 import AbstractComponent from "./abstract-component.js";
+import {AbstractComponentError} from '../const';
 
-const ABSTRACT_METHOD_ERROR = `Abstract method should be implemented: recoverListeners.`;
+const RECOVER_LISTENERS_NAME = `recoverListeners`;
 
 export default class AbstractSmartComponent extends AbstractComponent {
   recoverListeners() {
-    throw new Error(ABSTRACT_METHOD_ERROR);
+    throw new Error(AbstractComponentError.methodNotImplemented(RECOVER_LISTENERS_NAME));
   }
 
   rerender() {
