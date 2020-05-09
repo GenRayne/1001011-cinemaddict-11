@@ -10,6 +10,8 @@ export const formatDate = (date) => moment(date).format(`YYYY/MM/DD`);
 
 export const formatLongDate = (date) => moment(date).format(`D MMMM YYYY`);
 
+export const getDateFromNow = (date) => moment(date).fromNow();
+
 export const getDuration = (minutes) => {
   const hours = moment.duration(minutes, `minutes`).hours();
   const minutesLeft = minutes % 60;

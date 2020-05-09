@@ -1,8 +1,7 @@
 import {EMOJIS} from '../const';
 import {
-  formatDate,
-  formatTime,
   formatLongDate,
+  getDateFromNow,
   isChecked,
   getDuration
 } from '../utils/common';
@@ -47,7 +46,7 @@ const createFilmDetailsTemplate = (film) => {
       date,
     } = comment;
 
-    const commentDate = `${formatDate(date)} ${formatTime(date)}`;
+    const commentDate = `${getDateFromNow(date)}`;
 
     return (
       `<li class="film-details__comment">
