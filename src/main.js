@@ -1,12 +1,11 @@
-import UserSection from './components/user-section';
-import MainMenu from './components/main-menu';
-import Sort from './components/sort';
 import FooterStats from './components/footer-stats';
+import MainMenu from './components/main-menu';
 import PageController from './controllers/page';
+import UserSection from './components/user-section';
 
-import {RenderPosition, START_INDEX} from './const';
-import {render} from './utils/render';
 import {generateFilms} from './mock/film';
+import {render} from './utils/render';
+import {RenderPosition, START_INDEX} from './const';
 
 const FILMS_NUMBER = 17;
 const EXTRA_FILMS_NUMBER = 2;
@@ -31,7 +30,6 @@ const siteFooterElement = document.querySelector(`.footer`);
 
 const userSectionElement = new UserSection(films);
 const mainMenuElement = new MainMenu(films);
-const sortElement = new Sort();
 const footerStatsElement = new FooterStats(FILMS_NUMBER);
 
 const filmSection = new PageController(siteMainElement, films, topRated, topCommented);
@@ -39,7 +37,6 @@ const filmSection = new PageController(siteMainElement, films, topRated, topComm
 const renderPage = () => {
   render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
   render(siteMainElement, mainMenuElement, RenderPosition.BEFOREEND);
-  render(siteMainElement, sortElement, RenderPosition.BEFOREEND);
 
   filmSection.render(films, topRated, topCommented);
 
