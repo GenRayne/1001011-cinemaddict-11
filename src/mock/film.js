@@ -17,9 +17,8 @@ const MAX_RELEASE_DATE = new Date(1999, 11, 31);
 
 const MAX_RATING = 10;
 
-const MAX_DURATION_H = 1;
-const MIN_DURATION_M = 30;
-const MAX_DURATION_M = 59;
+const MIN_DURATION_M = 40;
+const MAX_DURATION_M = 120;
 
 const MIN_GENRES_NUMBER = 1;
 const MAX_GENRES_NUMBER = 3;
@@ -147,8 +146,7 @@ const generateFilm = () => {
   const randomIndex = getRandomInteger(FILM_TITLES.length - 1);
   const sentencesNumber = getRandomInteger(MAX_SENTENCES_NUMBER, MIN_SENTENCES_NUMBER);
 
-  const durationHours = getRandomInteger(MAX_DURATION_H) ? `${getRandomInteger(MAX_DURATION_H)}h ` : ``;
-  const durationMinutes = `${getRandomInteger(MAX_DURATION_M, MIN_DURATION_M)}m`;
+  const duration = getRandomInteger(MAX_DURATION_M, MIN_DURATION_M);
 
   return {
     id: getRandomInteger(MAX_ID),
@@ -158,7 +156,7 @@ const generateFilm = () => {
     releaseDate: getRandomDate(MIN_RELEASE_DATE, MAX_RELEASE_DATE),
 
     rating: (Math.random() * MAX_RATING).toFixed(1),
-    duration: `${durationHours}${durationMinutes}`,
+    duration: `${duration}`,
     genres: getRandomArrayFromArray(GENRES, MAX_GENRES_NUMBER, MIN_GENRES_NUMBER),
 
     director: getRandomArrayItem(FILM_СREW),

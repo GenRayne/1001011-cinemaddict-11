@@ -4,6 +4,7 @@ import {
   formatTime,
   formatLongDate,
   isChecked,
+  getDuration
 } from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 
@@ -29,7 +30,9 @@ const createFilmDetailsTemplate = (film) => {
     comments,
   } = film;
 
-  const dateOfRelease = `${releaseDate.getDate()} ${formatLongDate(releaseDate)}`;
+  const dateOfRelease = `${formatLongDate(releaseDate)}`;
+  const filmDuration = getDuration(duration);
+
   const filmWriters = writers.join(`, `);
   const filmActors = actors.join(`, `);
 
@@ -115,7 +118,7 @@ const createFilmDetailsTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${filmDuration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

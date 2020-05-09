@@ -1,4 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component';
+import {getDuration} from '../utils/common';
+import moment from "moment";
 
 const DESCRIPTION_LENGTH = 140;
 
@@ -43,10 +45,11 @@ const createFilmCardTemplate = (film) => {
     isFavourite,
   } = film;
 
-  const releaseYear = `${releaseDate.getFullYear()}`;
+  const releaseYear = moment(releaseDate).format(`YYYY`);
   const genre = genres[0];
 
   let shortDescription = description;
+  const filmDuration = getDuration(duration);
 
   if (shortDescription.length > DESCRIPTION_LENGTH) {
     shortDescription = `${shortDescription.slice(0, DESCRIPTION_LENGTH - 1)}...`;
@@ -62,7 +65,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${filmDuration}</span>
         <span class="film-card__genre">${genre}</span>
       </p>
       <img src="${posterSrc}" alt="" class="film-card__poster">
