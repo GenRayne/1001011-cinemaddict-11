@@ -134,7 +134,7 @@ export default class MovieController {
     const newFilmData = Object.assign({}, this._film, {
       [key]: value
     });
-    this._onDataChange(oldFilmData, newFilmData);
+    this._onDataChange(this, oldFilmData, newFilmData);
   }
 
   // ----------------------- К просмотру -----------------------

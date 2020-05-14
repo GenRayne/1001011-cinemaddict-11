@@ -2,6 +2,7 @@ import FooterStats from './components/footer-stats';
 import MainMenu from './components/main-menu';
 import PageController from './controllers/page';
 import UserSection from './components/user-section';
+import Movies from './models/movies';
 
 import {generateFilms} from './mock/film';
 import {render} from './utils/render';
@@ -32,7 +33,10 @@ const userSectionElement = new UserSection(films);
 const mainMenuElement = new MainMenu(films);
 const footerStatsElement = new FooterStats(FILMS_NUMBER);
 
-const filmSection = new PageController(siteMainElement, films, topRated, topCommented);
+const moviesModel = new Movies();
+moviesModel.setMovies(films);
+
+const filmSection = new PageController(siteMainElement, films, topRated, topCommented, moviesModel);
 
 const renderPage = () => {
   render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
