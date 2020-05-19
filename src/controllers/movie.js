@@ -77,6 +77,14 @@ export default class MovieController {
     }
   }
 
+  destroy() {
+    remove(this._filmComponent.getElement());
+    if (this._filmDetailsComponent) {
+      remove(this._filmDetailsComponent.getElement());
+    }
+    document.removeEventListener(`keydown`, this._onEscapePress);
+  }
+
   // ================================== Обработчики ==================================
 
   _onEscapePress(evt) {

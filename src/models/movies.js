@@ -1,14 +1,21 @@
-import {START_INDEX} from '../const';
+import {getMoviesByFilter} from '../utils/filter';
+import {START_INDEX, MoviesFilter} from '../const';
 
 export default class Movies {
   constructor() {
     this._movies = [];
+    this._activeFilterType = MoviesFilter.ALL;
 
     this._dataChangeHandlers = [];
+    this._filterChangeHandlers = [];
+  }
+
+  getMoviesAll() {
+    return this._movies;
   }
 
   getMovies() {
-    return this._movies;
+    return getMoviesByFilter(this._movies, this._activeFilterType);
   }
 
   setMovies(movies) {
@@ -20,8 +27,17 @@ export default class Movies {
     this._dataChangeHandlers.push(handler);
   }
 
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());
+  }
+
+  setFilter(filterType) {
+    this._activeFilterType = filterType;
+    this._callHandlers(this._filterChangeHandlers);
   }
 
   updateMovie(id, movie) {

@@ -50,9 +50,14 @@ const renderFilms = (filmsContainer, filmsList, onDataChange, onViewChange) => {
 // =============================================================
 
 export default class PageController {
-  constructor(container, films, topRated, topCommented, moviesModel) {
+  constructor(container, moviesModel, topRatedMoviesModel, topCommentedMoviesModel) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._topRatedMoviesModel = topRatedMoviesModel;
+    this._topCommentedMoviesModel = topCommentedMoviesModel;
+    const movies = this._moviesModel.getMovies();
+    const topRated = this._topRatedMoviesModel.getMovies();
+    const topCommented = this._topCommentedMoviesModel.getMovies();
 
     this._shownFilmsNumber = SHOWN_FILMS_NUMBER_AT_START;
 
@@ -63,7 +68,7 @@ export default class PageController {
     this._filmsContainer = new FilmsContainer();
     this._filmsList = new FilmsList();
 
-    this._isEmpty = !films.length;
+    this._isEmpty = !movies.length;
     this._isEmptyText = this._isEmpty ? NO_MOVIES_TEXT : undefined;
     this._filmListHeading = new FilmListHeading(!this._isEmpty, this._isEmptyText);
 
@@ -80,10 +85,32 @@ export default class PageController {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._moreButtonClickHandler = this._moreButtonClickHandler.bind(this);
 
     this._sort.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._moviesModel.setFilterChangeHandler(this._onFilterChange);
+  }
+
+  // --------------------------------------------------------------
+
+  _renderMovies(movies) {
+    const moviesContainer = this._filmsContainer.getElement();
+    const newMovies = renderFilms(moviesContainer, movies, this._onDataChange, this._onViewChange);
+    this._shownMovieControllers = this._shownMovieControllers.concat(newMovies);
+    this._shownFilmsNumber = this._shownMovieControllers.length;
+  }
+
+  _removeMovies() {
+    this._shownMovieControllers.forEach((controller) => controller.destroy());
+    this._shownMovieControllers = [];
+  }
+
+  _updateMovies(count) {
+    this._removeMovies();
+    this._renderMovies(this._moviesModel.getMovies().slice(START_INDEX, count));
+    this._renderLoadMoreBtn();
   }
 
   // --------------------------------------------------------------
@@ -102,6 +129,10 @@ export default class PageController {
     });
   }
 
+  _onFilterChange() {
+    this._updateMovies(SHOWN_FILMS_NUMBER_AT_START);
+  }
+
   // --------------------------------------------------------------
 
   _onSortTypeChange(sortType) {
@@ -110,17 +141,9 @@ export default class PageController {
 
     const sortedFilms = getSortedFilms(movies, sortType, 0, this._shownFilmsNumber);
 
-    this._filmsContainer.getElement().innerHTML = ``;
+    this._removeMovies();
 
-    const newFilms = renderFilms(
-        this._filmsContainer.getElement(),
-        sortedFilms,
-        this._onDataChange,
-        this._onViewChange
-    );
-
-    this._shownMovieControllers = newFilms;
-
+    this._renderMovies(sortedFilms);
     this._renderLoadMoreBtn();
   }
 
@@ -138,13 +161,8 @@ export default class PageController {
         prevShownFilmsNumber,
         this._shownFilmsNumber
     );
-    const moreFilms = renderFilms(
-        this._filmsContainer.getElement(),
-        sortedFilms,
-        this._onDataChange,
-        this._onViewChange
-    );
-    this._shownMovieControllers = this._shownMovieControllers.concat(moreFilms);
+
+    this._renderMovies(sortedFilms);
 
     if (this._shownFilmsNumber >= movies.length) {
       remove(this._moreBtnElement.getElement());
@@ -162,8 +180,10 @@ export default class PageController {
 
   // --------------------------------------------------------------
 
-  render(films, topRated, topCommented) {
+  render() {
     const movies = this._moviesModel.getMovies();
+    const topRated = this._topRatedMoviesModel.getMovies();
+    const topCommented = this._topCommentedMoviesModel.getMovies();
 
     render(siteMainElement, this._sort, RenderPosition.BEFOREEND);
     render(this._container, this._filmsSection, RenderPosition.BEFOREEND);

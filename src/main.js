@@ -1,5 +1,5 @@
 import FooterStats from './components/footer-stats';
-import MainMenu from './components/main-menu';
+import FilterController from './controllers/filter';
 import PageController from './controllers/page';
 import UserSection from './components/user-section';
 import Movies from './models/movies';
@@ -30,19 +30,25 @@ const siteFooterElement = document.querySelector(`.footer`);
 // -------------------------------------------------------
 
 const userSectionElement = new UserSection(films);
-const mainMenuElement = new MainMenu(films);
 const footerStatsElement = new FooterStats(FILMS_NUMBER);
 
 const moviesModel = new Movies();
 moviesModel.setMovies(films);
 
-const filmSection = new PageController(siteMainElement, films, topRated, topCommented, moviesModel);
+const topRatedMoviesModel = new Movies();
+topRatedMoviesModel.setMovies(topRated);
+
+const topCommentedMoviesModel = new Movies();
+topCommentedMoviesModel.setMovies(topCommented);
+
+const filterController = new FilterController(siteMainElement, moviesModel);
+const filmSection = new PageController(siteMainElement, moviesModel, topRatedMoviesModel, topCommentedMoviesModel);
 
 const renderPage = () => {
   render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
-  render(siteMainElement, mainMenuElement, RenderPosition.BEFOREEND);
 
-  filmSection.render(films, topRated, topCommented);
+  filterController.render();
+  filmSection.render();
 
   render(siteFooterElement, footerStatsElement, `beforeend`);
 };
