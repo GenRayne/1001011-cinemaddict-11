@@ -1,3 +1,4 @@
+import Comments from '../models/comments';
 import FilmsSection from '../components/films-section';
 import FilmsList from '../components/films-list';
 import FilmListHeading from '../components/films-list-heading';
@@ -7,11 +8,13 @@ import MoreBtn from '../components/more-btn';
 import MovieController from '../controllers/movie';
 import Sort, {SortType} from '../components/sort';
 
-import {RenderPosition, ExtraTitle, START_INDEX} from '../const';
+import {getTopRated, getTopCommented} from '../utils/common';
+import {ExtraTitle, RenderPosition, START_INDEX} from '../const';
 import {render, remove} from '../utils/render';
 
 const SHOWN_FILMS_NUMBER_AT_START = 5;
 const SHOWN_FILMS_NUMBER_BY_BTN = 5;
+const EXTRA_FILMS_NUMBER = 2;
 
 const NO_MOVIES_TEXT = `There are no movies in our database`;
 
@@ -40,7 +43,9 @@ const getSortedFilms = (films, sortType, from, to) => {
 
 const renderFilms = (filmsContainer, filmsList, onDataChange, onViewChange) => {
   return filmsList.map((film) => {
-    const movieController = new MovieController(filmsContainer, onDataChange, onViewChange);
+    const commentsModel = new Comments();
+    commentsModel.setComments(film.comments);
+    const movieController = new MovieController(filmsContainer, commentsModel, onDataChange, onViewChange);
     movieController.render(film);
 
     return movieController;
@@ -50,14 +55,13 @@ const renderFilms = (filmsContainer, filmsList, onDataChange, onViewChange) => {
 // =============================================================
 
 export default class PageController {
-  constructor(container, moviesModel, topRatedMoviesModel, topCommentedMoviesModel) {
+  constructor(container, moviesModel) {
     this._container = container;
     this._moviesModel = moviesModel;
-    this._topRatedMoviesModel = topRatedMoviesModel;
-    this._topCommentedMoviesModel = topCommentedMoviesModel;
+
     const movies = this._moviesModel.getMovies();
-    const topRated = this._topRatedMoviesModel.getMovies();
-    const topCommented = this._topCommentedMoviesModel.getMovies();
+    const topRated = getTopRated(movies, EXTRA_FILMS_NUMBER);
+    const topCommented = getTopCommented(movies, EXTRA_FILMS_NUMBER);
 
     this._shownFilmsNumber = SHOWN_FILMS_NUMBER_AT_START;
 
@@ -129,11 +133,11 @@ export default class PageController {
     });
   }
 
+  // --------------------------------------------------------------
+
   _onFilterChange() {
     this._updateMovies(SHOWN_FILMS_NUMBER_AT_START);
   }
-
-  // --------------------------------------------------------------
 
   _onSortTypeChange(sortType) {
     const movies = this._moviesModel.getMovies();
@@ -182,8 +186,8 @@ export default class PageController {
 
   render() {
     const movies = this._moviesModel.getMovies();
-    const topRated = this._topRatedMoviesModel.getMovies();
-    const topCommented = this._topCommentedMoviesModel.getMovies();
+    const topRated = getTopRated(movies, EXTRA_FILMS_NUMBER);
+    const topCommented = getTopCommented(movies, EXTRA_FILMS_NUMBER);
 
     render(siteMainElement, this._sort, RenderPosition.BEFOREEND);
     render(this._container, this._filmsSection, RenderPosition.BEFOREEND);

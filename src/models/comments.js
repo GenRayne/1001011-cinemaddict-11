@@ -39,4 +39,21 @@ export default class Comments {
     this._callHandlers(this._dataChangeHandlers);
     return true;
   }
+
+  addComment(comment) {
+    this._comments = [].concat(comment, this._comments);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
+  removeComment(id) {
+    const index = this._comments.findIndex((item) => item.id === id);
+    if (index === -1) {
+      return false;
+    }
+
+    this._comments = [].concat(this._comments.slice(START_INDEX, index), this._comments.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+    return true;
+  }
 }

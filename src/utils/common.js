@@ -1,4 +1,13 @@
 import moment from "moment";
+import {START_INDEX} from '../const';
+
+export const getTopRated = (films, count) => films.slice()
+  .sort((a, b) => b.rating - a.rating)
+  .slice(START_INDEX, count);
+
+export const getTopCommented = (films, count) => films.slice()
+  .sort((a, b) => b.comments.length - a.comments.length)
+  .slice(START_INDEX, count);
 
 export const isChecked = (isTrue) => isTrue ? `checked` : ``;
 

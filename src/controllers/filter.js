@@ -1,7 +1,7 @@
 import MainMenu from '../components/main-menu';
-import {MoviesFilter, RenderPosition} from '../const';
-import {render, replace} from '../utils/render';
 import {getMoviesByFilter} from '../utils/filter';
+import {render, replace} from '../utils/render';
+import {MoviesFilter, RenderPosition} from '../const';
 
 export default class FilterController {
   constructor(container, moviesModel) {

@@ -1,7 +1,8 @@
-import {RenderPosition, Key} from '../const';
-import {render, remove, replace} from '../utils/render';
+import Comments from '../components/comments';
 import FilmCard from '../components/film-card';
 import FilmDetails from '../components/film-details';
+import {RenderPosition, Key} from '../const';
+import {render, remove, replace} from '../utils/render';
 
 const Mode = {
   DEFAULT: `default`,
@@ -17,8 +18,9 @@ const MovieState = {
 const bodyElement = document.querySelector(`body`);
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, commentsModel, onDataChange, onViewChange) {
     this._container = container;
+    this._commentsModel = commentsModel;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
@@ -26,6 +28,7 @@ export default class MovieController {
 
     this._filmComponent = null;
     this._filmDetailsComponent = null;
+    this._commentsComponent = null;
     this._selectedEmojiPlacement = null;
 
     this._onEscapePress = this._onEscapePress.bind(this);
@@ -101,6 +104,7 @@ export default class MovieController {
 
     this._filmDetailsComponent = new FilmDetails(this._film);
     this._filmDetailsComponent.setCloseBtnClickHandler(this._onCloseBtnClick);
+    this._filmCommentsComponent = new Comments(this._film.comments);
 
     this._filmDetailsComponent.setWatchlistBtnClickHandler(this._onWatchlistBtnClick);
     this._filmDetailsComponent.setWatchedBtnClickHandler(this._onWatchedBtnClick);
@@ -111,6 +115,13 @@ export default class MovieController {
     if (oldFilmDetailsComponent) {
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
     }
+
+    render(
+        this._filmDetailsComponent.getElementPreviousToCommentsContainer(),
+        this._filmCommentsComponent,
+        RenderPosition.AFTEREND
+    );
+
     bodyElement.append(this._filmDetailsComponent.getElement());
 
     document.addEventListener(`keydown`, this._onEscapePress);
