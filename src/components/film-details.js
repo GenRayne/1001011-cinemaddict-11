@@ -8,6 +8,7 @@ import {
 import {Key} from '../const';
 import {MAX_ID, USERNAMES} from '../mock/film';
 import AbstractSmartComponent from './abstract-smart-component';
+import {encode} from "he";
 
 const createFilmDetailsTemplate = (film) => {
   const {
@@ -144,7 +145,7 @@ const parseCommentFormData = (formData) => {
     id: getRandomInteger(MAX_ID),
     username: getRandomArrayItem(USERNAMES),
     emoji: formData.get(`comment-emoji`),
-    message: formData.get(`comment`),
+    message: encode(formData.get(`comment`)),
     date: new Date(),
   };
 };
