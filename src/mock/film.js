@@ -130,6 +130,7 @@ const getDesriptionSentences = (sentencesNumber) => {
 
 const generateComment = () => {
   return {
+    id: getRandomInteger(MAX_ID),
     username: getRandomArrayItem(USERNAMES),
     emoji: getRandomArrayItem(EMOJIS),
     message: getRandomArrayItem(MESSAGES),
@@ -176,4 +177,4 @@ const generateFilm = () => {
 
 const generateFilms = (count) => new Array(count).fill(``).map(generateFilm);
 
-export {generateFilm, generateFilms};
+export {generateFilm, generateFilms, MAX_ID, USERNAMES};

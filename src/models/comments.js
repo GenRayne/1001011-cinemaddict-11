@@ -24,24 +24,8 @@ export default class Comments {
     handlers.forEach((handler) => handler());
   }
 
-  updateComment(id, comment) {
-    const index = this._comments.findIndex((item) => item.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._comments = []
-      .concat(this._comments.slice(START_INDEX, index))
-      .concat(comment)
-      .concat(this._comments.slice(index + 1));
-
-    this._callHandlers(this._dataChangeHandlers);
-    return true;
-  }
-
   addComment(comment) {
-    this._comments = [].concat(comment, this._comments);
+    this._comments = [].concat(this._comments, comment);
     this._callHandlers(this._dataChangeHandlers);
   }
 

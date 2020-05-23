@@ -1,5 +1,7 @@
 export const START_INDEX = 0;
 
+export const INPUT_ERROR_SHADOW = `inset 0 0 5px 0 red`;
+
 export const AbstractComponentError = {
   NEW: `A new component can't be an instance of AbstractComponent. Use 'extends' instead.`,
   // Метод ниже в CamelCase, т.к. иначе при вызове ошибка линтера:
@@ -15,6 +17,7 @@ export const RenderPosition = {
 
 export const Key = {
   ESCAPE: `Escape`,
+  ENTER: `Enter`,
 };
 
 export const MoviesFilter = {
