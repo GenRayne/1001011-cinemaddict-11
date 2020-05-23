@@ -1,13 +1,14 @@
-import {EMOJIS} from '../const';
 import {
+  getRandomInteger,
+  getRandomArrayItem,
   formatLongDate,
-  getDateFromNow,
   isChecked,
   getDuration
 } from '../utils/common';
+import {Key} from '../const';
+import {MAX_ID, USERNAMES} from '../mock/film';
 import AbstractSmartComponent from './abstract-smart-component';
-
-const SELECTED_EMOJI_MARKUP = `<img width="55" height="55">`;
+import {encode} from "he";
 
 const createFilmDetailsTemplate = (film) => {
   const {
@@ -26,7 +27,6 @@ const createFilmDetailsTemplate = (film) => {
     isInWatchlist,
     isWatched,
     isFavourite,
-    comments,
   } = film;
 
   const dateOfRelease = `${formatLongDate(releaseDate)}`;
@@ -37,40 +37,6 @@ const createFilmDetailsTemplate = (film) => {
 
   const filmGenres = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
   .join(` `);
-
-  const filmComments = comments.map((comment) => {
-    const {
-      username,
-      emoji,
-      message,
-      date,
-    } = comment;
-
-    const commentDate = `${getDateFromNow(date)}`;
-
-    return (
-      `<li class="film-details__comment">
-        <span class="film-details__comment-emoji">
-          <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
-        </span>
-        <div>
-          <p class="film-details__comment-text">${message}</p>
-          <p class="film-details__comment-info">
-            <span class="film-details__comment-author">${username}</span>
-            <span class="film-details__comment-day">${commentDate}</span>
-            <button class="film-details__comment-delete">Delete</button>
-          </p>
-        </div>
-      </li>`
-    );
-  }).join(`\n`);
-
-  const commentEmojis = EMOJIS.map((emoji) => {
-    return `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
-    <label class="film-details__emoji-label" for="emoji-${emoji}">
-      <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
-    </label>`;
-  }).join(`\n`);
 
   return (
     `<section class="film-details">
@@ -168,31 +134,20 @@ const createFilmDetailsTemplate = (film) => {
         </div>
 
         <div class="form-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title"
-              >Comments <span class="film-details__comments-count"
-              >${filmComments.length}</span></h3>
-
-            <ul class="film-details__comments-list">
-              ${filmComments}
-            </ul>
-
-            <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
-
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-              </label>
-
-              <div class="film-details__emoji-list">
-                ${commentEmojis}
-              </div>
-            </div>
-          </section>
         </div>
       </form>
     </section>`
   );
+};
+
+const parseCommentFormData = (formData) => {
+  return {
+    id: getRandomInteger(MAX_ID),
+    username: getRandomArrayItem(USERNAMES),
+    emoji: formData.get(`comment-emoji`),
+    message: encode(formData.get(`comment`)),
+    date: new Date(),
+  };
 };
 
 // ================================================================================
@@ -218,10 +173,28 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setFavouriteBtnClickHandler(this._favouriteBtnClickHandler);
   }
 
-  getEmojiPlacement() {
-    const emojiDiv = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    emojiDiv.innerHTML = SELECTED_EMOJI_MARKUP;
-    return emojiDiv.firstElementChild;
+  // -------------------------------------------------------------------------
+
+  getCommentsSectionContainer() {
+    return this.getElement().querySelector(`.form-details__bottom-container`);
+  }
+
+  setFormSubmitHandler(handler) {
+    this._onCommentSubmit = (evt) => {
+      if (evt.key === Key.ENTER && (evt.ctrlKey || evt.metaKey)) {
+        handler();
+      }
+    };
+
+    this.getElement().querySelector(`.film-details__inner`)
+      .addEventListener(`keydown`, this._onCommentSubmit);
+  }
+
+  removeFormSubmitHandler() {
+    if (this._onCommentSubmit) {
+      this.getElement().querySelector(`.film-details__inner`)
+        .removeEventListener(`keydown`, this._onCommentSubmit);
+    }
   }
 
   // ------------------------------- Слушатели -------------------------------
@@ -254,12 +227,12 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._favouriteBtnClickHandler = handler;
   }
 
-  setEmojiClickHandler(handler) {
-    const emojis = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
+  // -------------------------------------------------------------------------
 
-    emojis.forEach((item) => {
-      item.addEventListener(`click`, handler);
-    });
+  getData() {
+    const form = this.getElement().querySelector(`.film-details__inner`);
+    const formData = new FormData(form);
 
+    return parseCommentFormData(formData);
   }
 }
