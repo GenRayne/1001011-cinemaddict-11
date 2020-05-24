@@ -9,7 +9,7 @@ const Method = {
 };
 
 const checkStatus = (response) => {
-  if (response.ok) {
+  if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
     throw new Error(`Error ${response.status}: ${response.statusText}`);

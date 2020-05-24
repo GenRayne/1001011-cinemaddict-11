@@ -6,9 +6,8 @@ import PageController from './controllers/page';
 import UserSection from './components/user-section';
 
 import {render, remove} from './utils/render';
-import {RenderPosition} from './const';
+import {RenderPosition, LoadingText} from './const';
 
-const LOADING_TEXT = `Loading...`;
 const NO_MOVIES = 0;
 
 const AUTHORIZATION = `Basic fFaDKd395hd8gaHh57`;
@@ -39,7 +38,7 @@ moviesModel.setMovies([]);
 render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
 
 filterController.render();
-filmSection.render(LOADING_TEXT);
+filmSection.render(LoadingText.DEFAULT);
 
 render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 

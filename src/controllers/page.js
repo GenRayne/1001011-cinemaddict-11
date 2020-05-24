@@ -133,14 +133,14 @@ export default class PageController {
     render(this._container, this._filmsSection, RenderPosition.BEFOREEND);
     render(this._filmsSection.getElement(), this._filmsList, RenderPosition.BEFOREEND);
 
+    const isEmpty = !movies.length;
+
     if (heading) {
-      this._filmListHeading = new FilmListHeading(!this._isEmpty, heading);
+      this._filmListHeading = new FilmListHeading(!isEmpty, heading);
     } else {
       remove(this._filmListHeading.getElement());
-
-      this._isEmpty = !movies.length;
-      this._isEmptyText = this._isEmpty ? NO_MOVIES_TEXT : undefined;
-      this._filmListHeading = new FilmListHeading(!this._isEmpty, this._isEmptyText);
+      const isEmptyText = isEmpty ? NO_MOVIES_TEXT : undefined;
+      this._filmListHeading = new FilmListHeading(!isEmpty, isEmptyText);
     }
 
     render(this._filmsList.getElement(), this._filmListHeading, RenderPosition.AFTERBEGIN);

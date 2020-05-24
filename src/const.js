@@ -2,6 +2,11 @@ export const START_INDEX = 0;
 
 export const INPUT_ERROR_SHADOW = `inset 0 0 5px 0 red`;
 
+export const LoadingText = {
+  DEFAULT: `Loading...`,
+  COMMENTS_ERROR: `Couldn't load the comments, try again later :(`
+};
+
 export const AbstractComponentError = {
   NEW: `A new component can't be an instance of AbstractComponent. Use 'extends' instead.`,
   // Метод ниже в CamelCase, т.к. иначе при вызове ошибка линтера:

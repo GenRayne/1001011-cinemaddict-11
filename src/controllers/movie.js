@@ -1,10 +1,11 @@
 import CommentController from '../controllers/comment';
+import CommentsLoader from '../components/comment-loader';
 import CommentsSection from '../components/comments-section';
 import FilmCard from '../components/film-card';
 import FilmDetails from '../components/film-details';
 import MovieModel from '../models/movie';
 // import {encode} from "he";
-import {RenderPosition, Key} from '../const';
+import {RenderPosition, Key, LoadingText} from '../const';
 import {render, remove, replace} from '../utils/render';
 import {stylizeInputError, stylizeBackToNormal} from '../utils/common';
 
@@ -111,7 +112,6 @@ export default class MovieController {
 
   _renderCommentsSection(comments) {
     this._commentsComponent = new CommentsSection(comments);
-    this._commentsContainer = this._filmDetailsComponent.getCommentsSectionContainer();
     render(this._commentsContainer, this._commentsComponent, RenderPosition.BEFOREEND);
 
     this._input = this._commentsComponent.getCommentInput();
@@ -155,9 +155,19 @@ export default class MovieController {
       this._updateFilmData(this._film, MovieState.FAVOURITE, !this._film.isFavourite);
     });
 
+    this._commentsContainer = this._filmDetailsComponent.getCommentsSectionContainer();
+    const commentsLoader = new CommentsLoader(LoadingText.DEFAULT);
+    render(this._commentsContainer, commentsLoader, RenderPosition.BEFOREEND);
+
     this._api.getMovieComments(this._film.id)
       .then((comments) => {
+        remove(commentsLoader.getElement());
         this._renderCommentsSection(comments);
+      })
+      .catch(() => {
+        remove(commentsLoader.getElement());
+        const errorCommentsLoader = new CommentsLoader(LoadingText.COMMENTS_ERROR);
+        render(this._commentsContainer, errorCommentsLoader, RenderPosition.BEFOREEND);
       });
 
 
@@ -234,18 +244,20 @@ export default class MovieController {
   }
 
   _clearCommentForm() {
-    this._input.value = ``;
+    if (this._commentsComponent) {
+      this._input.value = ``;
 
-    this._commentsComponent.getEmojiInputs().forEach((item) => {
-      item.checked = false;
-    });
+      this._commentsComponent.getEmojiInputs().forEach((item) => {
+        item.checked = false;
+      });
 
-    if (this._emojiImg) {
-      remove(this._emojiImg);
+      if (this._emojiImg) {
+        remove(this._emojiImg);
+      }
+
+      stylizeBackToNormal(this._selectedEmojiPlacement);
+      stylizeBackToNormal(this._input);
     }
-
-    stylizeBackToNormal(this._selectedEmojiPlacement);
-    stylizeBackToNormal(this._input);
   }
 
   _onCommentsChange(newComment) {
