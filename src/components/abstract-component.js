@@ -1,5 +1,5 @@
-import {createElement} from '../utils/render';
 import {AbstractComponentError} from '../const';
+import {createElement} from '../utils/render';
 
 const GET_TEMPLATE_NAME = `getTemplate`;
 
