@@ -1,5 +1,5 @@
-import FooterStats from './components/footer-stats';
 import FilterController from './controllers/filter';
+import FooterStats from './components/footer-stats';
 import Movies from './models/movies';
 import PageController from './controllers/page';
 import UserSection from './components/user-section';

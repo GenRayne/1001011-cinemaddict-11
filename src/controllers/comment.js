@@ -1,6 +1,6 @@
 import Comment from '../components/comment';
-import {RenderPosition} from '../const';
 import {render} from '../utils/render';
+import {RenderPosition} from '../const';
 
 export default class CommentController {
   constructor(container, commentsModel, onCommentsChange, onViewChange) {

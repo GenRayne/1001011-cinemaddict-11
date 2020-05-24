@@ -1,3 +1,4 @@
+import {EMOJIS} from '../const';
 import {
   getRandomInteger,
   getRandomBoolean,
@@ -5,7 +6,6 @@ import {
   getRandomDate,
   getRandomArrayFromArray,
 } from '../utils/common';
-import {EMOJIS} from '../const';
 
 const MAX_ID = 999;
 

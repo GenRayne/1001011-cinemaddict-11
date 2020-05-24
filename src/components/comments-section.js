@@ -1,5 +1,5 @@
-import {EMOJIS} from '../const';
 import AbstractSmartComponent from './abstract-smart-component';
+import {EMOJIS} from '../const';
 
 const SELECTED_EMOJI_MARKUP = `<img width="55" height="55">`;
 

@@ -1,6 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component';
-import {getDuration} from '../utils/common';
 import moment from "moment";
+import {getDuration} from '../utils/common';
 
 const DESCRIPTION_LENGTH = 140;
 

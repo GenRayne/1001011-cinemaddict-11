@@ -1,5 +1,5 @@
-import {UserRating, RatingStep} from '../const';
 import AbstractComponent from './abstract-component';
+import {UserRating, RatingStep} from '../const';
 
 const createUserSectionTemplate = (films) => {
   const filmsWatched = films.filter((film) => {

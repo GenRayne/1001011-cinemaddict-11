@@ -1,6 +1,6 @@
-import {MoviesFilter, filterToNavItemName} from '../const';
-import {getWatchlistMovies, getWatchedMovies, getFavouriteMovies} from '../utils/filter';
 import AbstractComponent from './abstract-component';
+import {getWatchlistMovies, getWatchedMovies, getFavouriteMovies} from '../utils/filter';
+import {MoviesFilter, filterToNavItemName} from '../const';
 
 const FILTER_HREF_PREFIX = `#`;
 

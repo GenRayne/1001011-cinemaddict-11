@@ -1,9 +1,9 @@
 import Comments from '../models/comments';
-import FilmsSection from '../components/films-section';
-import FilmsList from '../components/films-list';
 import FilmListHeading from '../components/films-list-heading';
 import FilmsContainer from '../components/films-container';
 import FilmsExtra from '../components/films-extra';
+import FilmsList from '../components/films-list';
+import FilmsSection from '../components/films-section';
 import MoreBtn from '../components/more-btn';
 import MovieController from '../controllers/movie';
 import Sort, {SortType} from '../components/sort';
