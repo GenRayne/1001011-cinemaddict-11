@@ -39,7 +39,7 @@ const createFilmCardTemplate = (film) => {
     description,
     duration,
     rating,
-    comments,
+    commentIds,
     isInWatchlist,
     isWatched,
     isFavourite,
@@ -70,7 +70,7 @@ const createFilmCardTemplate = (film) => {
       </p>
       <img src="${posterSrc}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
-      <a class="film-card__comments">${comments.length} comments</a>
+      <a class="film-card__comments">${commentIds.length} comments</a>
       <form class="film-card__controls">
         ${watchlistBtn}
         ${watchedBtn}

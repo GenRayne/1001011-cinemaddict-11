@@ -2,6 +2,8 @@ import CommentController from '../controllers/comment';
 import CommentsSection from '../components/comments-section';
 import FilmCard from '../components/film-card';
 import FilmDetails from '../components/film-details';
+import MovieModel from '../models/movie';
+// import {encode} from "he";
 import {RenderPosition, Key} from '../const';
 import {render, remove, replace} from '../utils/render';
 import {stylizeInputError, stylizeBackToNormal} from '../utils/common';
@@ -19,12 +21,21 @@ const MovieState = {
 
 const bodyElement = document.querySelector(`body`);
 
+// const parseCommentFormData = (formData) => {
+//   return {
+//     emoji: formData.get(`comment-emoji`),
+//     message: encode(formData.get(`comment`)),
+//     date: new Date(),
+//   };
+// };
+
 export default class MovieController {
-  constructor(container, commentsModel, onDataChange, onViewChange) {
+  constructor(container, commentsModel, api, onDataChange, onViewChange) {
     this._container = container;
     this._commentsModel = commentsModel;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._api = api;
 
     this._mode = Mode.DEFAULT;
 
@@ -40,14 +51,6 @@ export default class MovieController {
     this._onEscapePress = this._onEscapePress.bind(this);
     this._onPopupOpen = this._onPopupOpen.bind(this);
     this._onCloseBtnClick = this._onCloseBtnClick.bind(this);
-
-    this._onWatchlistIconClick = this._onWatchlistIconClick.bind(this);
-    this._onWatchedIconClick = this._onWatchedIconClick.bind(this);
-    this._onFavouriteIconClick = this._onFavouriteIconClick.bind(this);
-
-    this._onWatchlistBtnClick = this._onWatchlistBtnClick.bind(this);
-    this._onWatchedBtnClick = this._onWatchedBtnClick.bind(this);
-    this._onFavouriteBtnClick = this._onFavouriteBtnClick.bind(this);
 
     this._createCommentController = this._createCommentController.bind(this);
     this._onEmojiSelect = this._onEmojiSelect.bind(this);
@@ -76,9 +79,20 @@ export default class MovieController {
     this._filmComponent.setTitleClickHandler(this._onPopupOpen);
     this._filmComponent.setCommentsClickHandler(this._onPopupOpen);
 
-    this._filmComponent.setWatchlistIconClickHandler(this._onWatchlistIconClick);
-    this._filmComponent.setWatchedIconClickHandler(this._onWatchedIconClick);
-    this._filmComponent.setFavouriteIconClickHandler(this._onFavouriteIconClick);
+    this._filmComponent.setWatchlistIconClickHandler((evt) => {
+      evt.preventDefault();
+      this._updateFilmData(film, MovieState.WATCHLIST, !this._film.isInWatchlist);
+    });
+
+    this._filmComponent.setWatchedIconClickHandler((evt) => {
+      evt.preventDefault();
+      this._updateFilmData(film, MovieState.WATCHED, !this._film.isWatched);
+    });
+
+    this._filmComponent.setFavouriteIconClickHandler((evt) => {
+      evt.preventDefault();
+      this._updateFilmData(film, MovieState.FAVOURITE, !this._film.isFavourite);
+    });
 
     if (oldFilmComponent) {
       replace(this._filmComponent, oldFilmComponent);
@@ -125,16 +139,27 @@ export default class MovieController {
     this._mode = Mode.DETAILED;
 
     const oldFilmDetailsComponent = this._filmDetailsComponent;
-    const comments = this._commentsModel.getComments();
 
     this._filmDetailsComponent = new FilmDetails(this._film);
     this._filmDetailsComponent.setCloseBtnClickHandler(this._onCloseBtnClick);
 
-    this._filmDetailsComponent.setWatchlistBtnClickHandler(this._onWatchlistBtnClick);
-    this._filmDetailsComponent.setWatchedBtnClickHandler(this._onWatchedBtnClick);
-    this._filmDetailsComponent.setFavouriteBtnClickHandler(this._onFavouriteBtnClick);
+    this._filmDetailsComponent.setWatchlistBtnClickHandler(() => {
+      this._updateFilmData(this._film, MovieState.WATCHLIST, !this._film.isInWatchlist);
+    });
 
-    this._renderCommentsSection(comments);
+    this._filmDetailsComponent.setWatchedBtnClickHandler(() => {
+      this._updateFilmData(this._film, MovieState.WATCHED, !this._film.isWatched);
+    });
+
+    this._filmDetailsComponent.setFavouriteBtnClickHandler(() => {
+      this._updateFilmData(this._film, MovieState.FAVOURITE, !this._film.isFavourite);
+    });
+
+    this._api.getMovieComments(this._film.id)
+      .then((comments) => {
+        this._renderCommentsSection(comments);
+      });
+
 
     if (oldFilmDetailsComponent) {
       replace(this._filmDetailsComponent, oldFilmDetailsComponent);
@@ -148,6 +173,15 @@ export default class MovieController {
   _onCloseBtnClick() {
     this.setDefaultView();
     document.removeEventListener(`keydown`, this._onEscapePress);
+  }
+
+  // -----------------------------------------------------------
+
+  _updateFilmData(movie, key, value) {
+    const oldMovieData = this._film;
+    const newMovie = MovieModel.clone(movie);
+    newMovie[key] = value;
+    this._onDataChange(this, oldMovieData, newMovie);
   }
 
   // ---------------------- Выбор эмоции ----------------------
@@ -165,52 +199,6 @@ export default class MovieController {
     this._emojiImg.alt = `emoji-${this._emojiName}`;
 
     stylizeBackToNormal(this._selectedEmojiPlacement);
-  }
-
-  // -----------------------------------------------------------
-
-  _updateFilmData(key, value) {
-    const oldFilmData = this._film;
-    const newFilmData = Object.assign({}, this._film, {
-      [key]: value
-    });
-    this._onDataChange(this, oldFilmData, newFilmData);
-  }
-
-  // ----------------------- К просмотру -----------------------
-
-  _onWatchlistIconClick(evt) {
-    evt.preventDefault();
-    this._updateFilmData(MovieState.WATCHLIST, !this._film.isInWatchlist);
-  }
-
-  _onWatchlistBtnClick() {
-    this._film.isInWatchlist = !this._film.isInWatchlist;
-    this.render(this._film);
-  }
-
-  // ----------------------- Просмотрено -----------------------
-
-  _onWatchedIconClick(evt) {
-    evt.preventDefault();
-    this._updateFilmData(MovieState.WATCHED, !this._film.isWatched);
-  }
-
-  _onWatchedBtnClick() {
-    this._film.isWatched = !this._film.isWatched;
-    this.render(this._film);
-  }
-
-  // ------------------------ Избранное ------------------------
-
-  _onFavouriteIconClick(evt) {
-    evt.preventDefault();
-    this._updateFilmData(MovieState.FAVOURITE, !this._film.isFavourite);
-  }
-
-  _onFavouriteBtnClick() {
-    this._film.isFavourite = !this._film.isFavourite;
-    this.render(this._film);
   }
 
   // ================================ Комментарии ================================

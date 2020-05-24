@@ -1,18 +1,15 @@
 import AbstractSmartComponent from './abstract-smart-component';
-import {encode} from "he";
 import {
   formatLongDate,
   getDuration,
-  getRandomArrayItem,
-  getRandomInteger,
   isChecked,
 } from '../utils/common';
 import {Key} from '../const';
-import {MAX_ID, USERNAMES} from '../mock/film';
 
 const createFilmDetailsTemplate = (film) => {
   const {
     title,
+    alternativeTitle,
     posterSrc,
     releaseDate,
     duration,
@@ -49,14 +46,14 @@ const createFilmDetailsTemplate = (film) => {
             <div class="film-details__poster">
               <img class="film-details__poster-img" src="${posterSrc}" alt="">
 
-              <p class="film-details__age">${age}</p>
+              <p class="film-details__age">${age}+</p>
             </div>
 
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">Original: ${title}</p>
+                  <p class="film-details__title-original">Original: ${alternativeTitle}</p>
                 </div>
 
                 <div class="film-details__rating">
@@ -140,16 +137,6 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
-const parseCommentFormData = (formData) => {
-  return {
-    id: getRandomInteger(MAX_ID),
-    username: getRandomArrayItem(USERNAMES),
-    emoji: formData.get(`comment-emoji`),
-    message: encode(formData.get(`comment`)),
-    date: new Date(),
-  };
-};
-
 // ================================================================================
 
 export default class FilmDetails extends AbstractSmartComponent {
@@ -231,8 +218,6 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   getData() {
     const form = this.getElement().querySelector(`.film-details__inner`);
-    const formData = new FormData(form);
-
-    return parseCommentFormData(formData);
+    return new FormData(form);
   }
 }
