@@ -1,10 +1,11 @@
 import CommentController from '../controllers/comment';
+import CommentModel from '../models/comment';
 import CommentsLoader from '../components/comment-loader';
 import CommentsSection from '../components/comments-section';
 import FilmCard from '../components/film-card';
 import FilmDetails from '../components/film-details';
 import MovieModel from '../models/movie';
-// import {encode} from "he";
+import {encode} from "he";
 import {RenderPosition, Key, LoadingText} from '../const';
 import {render, remove, replace} from '../utils/render';
 import {stylizeInputError, stylizeBackToNormal} from '../utils/common';
@@ -22,13 +23,15 @@ const MovieState = {
 
 const bodyElement = document.querySelector(`body`);
 
-// const parseCommentFormData = (formData) => {
-//   return {
-//     emoji: formData.get(`comment-emoji`),
-//     message: encode(formData.get(`comment`)),
-//     date: new Date(),
-//   };
-// };
+const parseCommentFormData = (formData) => {
+  return new CommentModel({
+    id: null,
+    author: null,
+    emotion: formData.get(`comment-emoji`),
+    comment: encode(formData.get(`comment`)),
+    date: new Date(),
+  });
+};
 
 export default class MovieController {
   constructor(container, commentsModel, api, onDataChange, onViewChange) {
@@ -162,6 +165,7 @@ export default class MovieController {
     this._api.getMovieComments(this._film.id)
       .then((comments) => {
         remove(commentsLoader.getElement());
+        this._commentsModel.setComments(comments);
         this._renderCommentsSection(comments);
       })
       .catch(() => {
@@ -219,7 +223,7 @@ export default class MovieController {
   }
 
   _createCommentController(comment) {
-    const commentController = new CommentController(this._container, this._commentsModel, this._onCommentsChange);
+    const commentController = new CommentController(this._container, this._commentsModel, this._api, this._onCommentsChange);
     this._commentControllers.push(commentController);
     commentController.render(comment);
   }
@@ -260,28 +264,38 @@ export default class MovieController {
     }
   }
 
-  _onCommentsChange(newComment) {
+  _onCommentsChange(newData) {
     const comments = this._commentsModel.getComments();
 
-    if (newComment) {
+    if (newData) {
+      const newComment = parseCommentFormData(newData);
       const isValid = this._validateNewComment(newComment);
 
       if (isValid) {
-        this._commentsModel.addComment(newComment);
-        this._createCommentController(newComment);
-        this._updateFilmData(`comments`, this._commentsModel.getComments());
+        this._api.createComment(newComment, this._film.id)
+          .then((commentsModel) => {
+            this._commentsModel.setComments(commentsModel);
+            this._commentControllers.forEach((controller) => controller.destroy());
 
-        this._clearCommentForm();
-        this._commentsComponent.removeMessageOnInputHandler();
+            this._commentsModel.getComments()
+              .forEach(this._createCommentController);
+
+            this._updateFilmData(this._film, `comments`, this._commentsModel.getComments());
+
+            this._clearCommentForm();
+            this._commentsComponent.removeMessageOnInputHandler();
+          });
+
       } else {
         this._commentsComponent.setMessageOnInputHandler(this._validateMessage);
       }
+
     } else {
       remove(this._commentsComponent.getElement());
       this._filmDetailsComponent.removeFormSubmitHandler();
 
       this._renderCommentsSection(comments);
-      this._updateFilmData(`comments`, comments);
+      this._updateFilmData(this._film, `comments`, comments);
     }
   }
 }
