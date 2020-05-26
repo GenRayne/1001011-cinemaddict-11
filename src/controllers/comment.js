@@ -1,6 +1,7 @@
 import Comment from '../components/comment';
 import {render, remove} from '../utils/render';
-import {RenderPosition} from '../const';
+import {shake} from '../utils/common';
+import {RenderPosition, DeletingText} from '../const';
 
 export default class CommentController {
   constructor(container, commentsModel, api, onCommentsChange) {
@@ -29,10 +30,21 @@ export default class CommentController {
 
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
+    evt.target.disabled = true;
+    evt.target.textContent = DeletingText.LOADING;
+
     this._api.deleteComment(this._comment.id)
       .then(() => {
         this._commentsModel.removeComment(this._comment.id);
         this._onCommentsChange(null);
+      })
+      .catch(() => {
+        const commentElement = evt.target.closest(`.film-details__comment`);
+        shake(commentElement);
+      })
+      .then(() => {
+        evt.target.disabled = false;
+        evt.target.textContent = DeletingText.DEFAULT;
       });
   }
 }

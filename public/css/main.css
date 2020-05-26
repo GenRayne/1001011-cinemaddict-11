@@ -764,6 +764,7 @@ button {
   border: dashed 1px #979797;
   background-color: rgba(255, 255, 255, 0.1);
   margin-right: 14px;
+  transition: box-shadow 0.3s linear;
 }
 .film-details__emoji-label {
   width: 40px;
@@ -862,9 +863,13 @@ button {
   font-size: 20px;
   resize: none;
   outline: none;
+  transition: box-shadow 0.3s linear;
 }
 .film-details__comment-input::placeholder {
   color: #212126;
+}
+.film-details__comment-input:disabled {
+  background-color: #c6d6e6;
 }
 .film-details__comment-label {
   width: 100%;
@@ -1074,4 +1079,30 @@ button {
   min-height: 300px;
   padding-top: 50px;
   padding-bottom: 50px;
+}
+
+.shake {
+  animation: shake 0.6s;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }

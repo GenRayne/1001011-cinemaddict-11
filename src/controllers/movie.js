@@ -8,7 +8,7 @@ import MovieModel from '../models/movie';
 import {encode} from "he";
 import {RenderPosition, Key, LoadingText} from '../const';
 import {render, remove, replace} from '../utils/render';
-import {stylizeInputError, stylizeBackToNormal} from '../utils/common';
+import {stylizeInputError, stylizeBackToNormal, shake} from '../utils/common';
 
 const Mode = {
   DEFAULT: `default`,
@@ -42,6 +42,7 @@ export default class MovieController {
     this._api = api;
 
     this._mode = Mode.DEFAULT;
+    this._isFormDisabled = false;
 
     this._filmComponent = null;
     this._filmDetailsComponent = null;
@@ -201,18 +202,20 @@ export default class MovieController {
   // ---------------------- Выбор эмоции ----------------------
 
   _onEmojiSelect(evt) {
-    this._emojiImg = this._commentsComponent.createEmojiImg();
-    const emojiImageSrc = evt.target.matches(`img`) ? evt.target.src : evt.target.firstElementChild.src;
+    if (!this._isFormDisabled) {
+      this._emojiImg = this._commentsComponent.createEmojiImg();
+      const emojiImageSrc = evt.target.matches(`img`) ? evt.target.src : evt.target.firstElementChild.src;
 
-    const nameStartIndex = emojiImageSrc.lastIndexOf(`/`);
-    const nameEndIndex = emojiImageSrc.lastIndexOf(`.`);
+      const nameStartIndex = emojiImageSrc.lastIndexOf(`/`);
+      const nameEndIndex = emojiImageSrc.lastIndexOf(`.`);
 
-    this._emojiName = emojiImageSrc.slice(nameStartIndex + 1, nameEndIndex);
+      this._emojiName = emojiImageSrc.slice(nameStartIndex + 1, nameEndIndex);
 
-    this._emojiImg.src = `./images/emoji/${this._emojiName}.png`;
-    this._emojiImg.alt = `emoji-${this._emojiName}`;
+      this._emojiImg.src = `./images/emoji/${this._emojiName}.png`;
+      this._emojiImg.alt = `emoji-${this._emojiName}`;
 
-    stylizeBackToNormal(this._selectedEmojiPlacement);
+      stylizeBackToNormal(this._selectedEmojiPlacement);
+    }
   }
 
   // ================================ Комментарии ================================
@@ -247,6 +250,16 @@ export default class MovieController {
     }
   }
 
+  _showCommentUploadError(element) {
+    shake(element);
+    stylizeInputError(this._input);
+    stylizeInputError(this._selectedEmojiPlacement);
+    setTimeout(() => {
+      stylizeBackToNormal(this._input);
+      stylizeBackToNormal(this._selectedEmojiPlacement);
+    }, 1000);
+  }
+
   _clearCommentForm() {
     if (this._commentsComponent) {
       this._input.value = ``;
@@ -264,14 +277,29 @@ export default class MovieController {
     }
   }
 
+  _disableCommentForm(isDisabled) {
+    if (this._commentsComponent) {
+      this._input.disabled = isDisabled;
+
+      this._commentsComponent.getEmojiInputs().forEach((item) => {
+        item.disabled = isDisabled;
+      });
+    }
+    this._isFormDisabled = isDisabled;
+  }
+
   _onCommentsChange(newData) {
+    stylizeBackToNormal(this._input);
     const comments = this._commentsModel.getComments();
+    const newCommentElement = this._commentsComponent.getNewCommentForm();
 
     if (newData) {
       const newComment = parseCommentFormData(newData);
       const isValid = this._validateNewComment(newComment);
 
       if (isValid) {
+        this._disableCommentForm(true);
+
         this._api.createComment(newComment, this._film.id)
           .then((commentsModel) => {
             this._commentsModel.setComments(commentsModel);
@@ -284,9 +312,16 @@ export default class MovieController {
 
             this._clearCommentForm();
             this._commentsComponent.removeMessageOnInputHandler();
+          })
+          .catch(() => {
+            this._showCommentUploadError(newCommentElement);
+          })
+          .then(() => {
+            this._disableCommentForm(false);
           });
 
       } else {
+        shake(newCommentElement);
         this._commentsComponent.setMessageOnInputHandler(this._validateMessage);
       }
 

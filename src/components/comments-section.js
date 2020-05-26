@@ -72,6 +72,10 @@ export default class CommentsSection extends AbstractSmartComponent {
     return this._emojiContainer;
   }
 
+  getNewCommentForm() {
+    return this.getElement().querySelector(`.film-details__new-comment`);
+  }
+
   createEmojiImg() {
     this._emojiContainer.innerHTML = SELECTED_EMOJI_MARKUP;
     return this._emojiContainer.firstElementChild;

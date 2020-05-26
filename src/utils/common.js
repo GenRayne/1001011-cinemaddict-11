@@ -1,5 +1,5 @@
 import moment from "moment";
-import {START_INDEX, INPUT_ERROR_SHADOW} from '../const';
+import {START_INDEX, INPUT_ERROR_SHADOW, SHAKE_TIMEOUT} from '../const';
 
 export const getTopRated = (films, count) => films.slice()
   .sort((a, b) => b.rating - a.rating)
@@ -10,6 +10,14 @@ export const getTopCommented = (films, count) => films.slice()
   .slice(START_INDEX, count);
 
 export const isChecked = (isTrue) => isTrue ? `checked` : ``;
+
+export const shake = (element) => {
+  element.classList.add(`shake`);
+
+  setTimeout(() => {
+    element.classList.remove(`shake`);
+  }, SHAKE_TIMEOUT);
+};
 
 // ================= Время / дата =================
 

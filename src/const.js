@@ -2,9 +2,16 @@ export const START_INDEX = 0;
 
 export const INPUT_ERROR_SHADOW = `inset 0 0 5px 0 red`;
 
+export const SHAKE_TIMEOUT = 600;
+
+export const DeletingText = {
+  DEFAULT: `Delete`,
+  LOADING: `Deleting...`,
+};
+
 export const LoadingText = {
   DEFAULT: `Loading...`,
-  COMMENTS_ERROR: `Couldn't load the comments, try again later :(`
+  COMMENTS_ERROR: `Couldn't load the comments, try again later :(`,
 };
 
 export const AbstractComponentError = {
