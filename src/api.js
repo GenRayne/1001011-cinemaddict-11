@@ -54,4 +54,22 @@ export default class API {
       .then((response) => response.json())
       .then((Movie.parseMovie));
   }
+
+  createComment(comment, movieId) {
+    return this._load({
+      url: `comments/${movieId}`,
+      method: Method.POST,
+      body: JSON.stringify(comment.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json())
+      .then((Comment.parseUpdatedComments));
+  }
+
+  deleteComment(commentId) {
+    return this._load({
+      url: `comments/${commentId}`,
+      method: Method.DELETE,
+    });
+  }
 }

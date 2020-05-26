@@ -11,8 +11,13 @@ export default class Comment {
     return new Comment(data);
   }
 
-  static parseComments(data) {
-    return data.map(Comment.parseComment);
+  static parseComments(comments) {
+    return comments.map(Comment.parseComment);
+  }
+
+  static parseUpdatedComments(data) {
+    const {comments} = data;
+    return comments.map(Comment.parseComment);
   }
 
   toRAW() {
@@ -23,5 +28,9 @@ export default class Comment {
       'date': this.date,
       'emotion': this.emoji,
     };
+  }
+
+  static clone(data) {
+    return new Comment(data.toRAW());
   }
 }
