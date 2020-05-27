@@ -3,6 +3,7 @@ import FilterController from './controllers/filter';
 import FooterStats from './components/footer-stats';
 import Movies from './models/movies';
 import PageController from './controllers/page';
+import Statistics from './components/statistics';
 import UserSection from './components/user-section';
 
 import {render, remove} from './utils/render';
@@ -45,15 +46,20 @@ render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 // =======================================================
 
 api.getMovies()
-  .then((movies) => {
-    moviesModel.setMovies(movies);
-    filmSection.render();
+.then((movies) => {
+  moviesModel.setMovies(movies);
+  filmSection.render();
 
-    const newFooterStats = new FooterStats(movies.length);
-    remove(footerStats.getElement());
-    render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
-  })
-  .catch(() => {
-    moviesModel.setMovies([]);
-    filmSection.render();
-  });
+  const statisticsComponent = new Statistics(movies);
+  render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
+
+  const newFooterStats = new FooterStats(movies.length);
+  remove(footerStats.getElement());
+  render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
+
+  filterController.render(filmSection, statisticsComponent);
+})
+.catch(() => {
+  moviesModel.setMovies([]);
+  filmSection.render();
+});

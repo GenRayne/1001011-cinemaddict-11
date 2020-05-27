@@ -253,4 +253,14 @@ export default class PageController {
 
     this._moreBtnElement.setClickHandler(this._moreButtonClickHandler);
   }
+
+  // --------------------------------------------------------------
+
+  show() {
+    this._filmsSection.show();
+  }
+
+  hide() {
+    this._filmsSection.hide();
+  }
 }

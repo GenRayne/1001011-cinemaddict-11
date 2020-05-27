@@ -2,7 +2,11 @@ export const START_INDEX = 0;
 
 export const INPUT_ERROR_SHADOW = `inset 0 0 5px 0 red`;
 
+export const HIDDEN_CLASS = `visually-hidden`;
+
 export const SHAKE_TIMEOUT = 600;
+
+export const MINUTES_IN_HOUR = 60;
 
 export const DeletingText = {
   DEFAULT: `Delete`,
@@ -38,6 +42,8 @@ export const MoviesFilter = {
   HISTORY: `history`,
   FAVORITES: `favorites`,
 };
+
+export const MenuItem = Object.assign(MoviesFilter, {STATS: `stats`});
 
 export const ExtraTitle = {
   TOP_RATED: `Top rated`,
