@@ -51,7 +51,9 @@ api.getMovies()
   filmSection.render();
 
   const statisticsComponent = new Statistics(movies);
+  statisticsComponent.hide();
   render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
+  statisticsComponent.renderChart();
 
   const newFooterStats = new FooterStats(movies.length);
   remove(footerStats.getElement());

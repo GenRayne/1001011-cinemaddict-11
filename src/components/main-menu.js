@@ -32,7 +32,6 @@ const createMainMenuTemplate = (films, movieFilters) => {
   const favouriteFilmsNumber = getFavouriteMovies(films).length;
 
   let activeStatsClass = ``;
-  console.log('movieFilters', movieFilters);
 
   movieFilters.forEach((item) => {
     switch (item.name) {

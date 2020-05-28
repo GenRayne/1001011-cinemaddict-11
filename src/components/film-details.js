@@ -35,7 +35,10 @@ const createFilmDetailsTemplate = (film) => {
   const filmGenres = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
   .join(` `);
 
-  const genresLabel = genres.length > 1 ? `Genres` : `Genre`;
+  let genresLabel = ``;
+  if (genres.length > 0) {
+    genresLabel = genres.length > 1 ? `Genres` : `Genre`;
+  }
 
   return (
     `<section class="film-details">

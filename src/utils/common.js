@@ -9,6 +9,8 @@ export const getTopCommented = (films, count) => films.slice()
   .sort((a, b) => b.comments.length - a.comments.length)
   .slice(START_INDEX, count);
 
+// ==================== Разное ====================
+
 export const isChecked = (isTrue) => isTrue ? `checked` : ``;
 
 export const shake = (element) => {
