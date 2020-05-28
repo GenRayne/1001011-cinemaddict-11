@@ -3,7 +3,6 @@ import FilterController from './controllers/filter';
 import FooterStats from './components/footer-stats';
 import Movies from './models/movies';
 import PageController from './controllers/page';
-import Statistics from './components/statistics';
 import UserSection from './components/user-section';
 
 import {render, remove} from './utils/render';
@@ -50,16 +49,11 @@ api.getMovies()
   moviesModel.setMovies(movies);
   filmSection.render();
 
-  const statisticsComponent = new Statistics(movies);
-  statisticsComponent.hide();
-  render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
-  statisticsComponent.renderChart();
-
   const newFooterStats = new FooterStats(movies.length);
   remove(footerStats.getElement());
   render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
 
-  filterController.render(filmSection, statisticsComponent);
+  filterController.render(filmSection);
 })
 .catch(() => {
   moviesModel.setMovies([]);

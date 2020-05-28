@@ -1,7 +1,8 @@
 import MainMenu from '../components/main-menu';
+import Statistics from '../components/statistics';
 import {getMoviesByFilter} from '../utils/filter';
 import {MoviesFilter, RenderPosition, MenuItem} from '../const';
-import {render, replace} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 
 export default class FilterController {
   constructor(container, moviesModel) {
@@ -23,11 +24,20 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._setActiveFilter(filterType);
 
-    if (this._filmSection && this._statisticsComponent) {
+    if (this._filmSection) {
       if (filterType === MenuItem.STATS) {
+        if (this._statisticsComponent) {
+          remove(this._statisticsComponent.getElement());
+        }
+
+        this._statisticsComponent = new Statistics(this._moviesModel.getMovies());
+        render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
+        this._statisticsComponent.renderChart();
+
         this._filmSection.hide();
         this._statisticsComponent.show();
-      } else {
+
+      } else if (this._statisticsComponent) {
         this._statisticsComponent.hide();
         this._filmSection.show();
       }
@@ -45,10 +55,9 @@ export default class FilterController {
     this.render();
   }
 
-  render(filmSection, statisticsComponent) {
-    if (filmSection && statisticsComponent) {
+  render(filmSection) {
+    if (filmSection) {
       this._filmSection = filmSection;
-      this._statisticsComponent = statisticsComponent;
     }
 
     const allMovies = this._moviesModel.getMoviesAll();
