@@ -111,6 +111,28 @@ export default class PageController {
     this._shownFilmsNumber = this._shownMovieControllers.length;
   }
 
+  _renderExtras(topRated, topCommented) {
+    if (topRated.length) {
+      this._shownTopRatedMovieControllers = renderFilms(
+          this._filmsTopRatedContainer.getElement(),
+          topRated,
+          this._api,
+          this._onDataChange,
+          this._onViewChange
+      );
+    }
+
+    if (topCommented.length) {
+      this._shownTopCommentedMovieControllers = renderFilms(
+          this._filmsTopCommentedContainer.getElement(),
+          topCommented,
+          this._api,
+          this._onDataChange,
+          this._onViewChange
+      );
+    }
+  }
+
   _removeMovies() {
     this._shownMovieControllers.forEach((controller) => controller.destroy());
     this._shownMovieControllers = [];
@@ -164,21 +186,7 @@ export default class PageController {
 
     this._renderLoadMoreBtn();
 
-    this._shownTopRatedMovieControllers = renderFilms(
-        this._filmsTopRatedContainer.getElement(),
-        topRated,
-        this._api,
-        this._onDataChange,
-        this._onViewChange
-    );
-
-    this._shownTopCommentedMovieControllers = renderFilms(
-        this._filmsTopCommentedContainer.getElement(),
-        topCommented,
-        this._api,
-        this._onDataChange,
-        this._onViewChange
-    );
+    this._renderExtras(topRated, topCommented);
 
     render(this._filmsTopRated.getElement(), this._filmsTopRatedContainer, RenderPosition.BEFOREEND);
     render(this._filmsTopCommented.getElement(), this._filmsTopCommentedContainer, RenderPosition.BEFOREEND);
@@ -193,10 +201,30 @@ export default class PageController {
       .then((movieModel) => {
         const isSuccess = this._moviesModel.updateMovie(oldData.id, movieModel);
 
-        if (isSuccess) {
-          movieController.render(movieModel);
+        if (!isSuccess) {
+          return;
+        }
+
+        const ordinaryController = this._findMovieController(this._shownMovieControllers, movieController);
+        const topRatedController = this._findMovieController(this._shownTopRatedMovieControllers, movieController);
+        const topCommentedController = this._findMovieController(this._shownTopCommentedMovieControllers, movieController);
+
+        if (ordinaryController) {
+          ordinaryController.render(movieModel);
+        }
+        if (topRatedController) {
+          topRatedController.render(movieModel);
+        }
+        if (topCommentedController) {
+          topCommentedController.render(movieModel);
         }
       });
+  }
+
+  _findMovieController(controllers, controller) {
+    const id = controller.getMovie().id;
+    const isFound = controllers.find((item) => item.getMovie().id === id);
+    return isFound;
   }
 
   _onViewChange() {

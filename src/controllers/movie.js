@@ -117,6 +117,10 @@ export default class MovieController {
     document.removeEventListener(`keydown`, this._onEscapePress);
   }
 
+  getMovie() {
+    return this._film;
+  }
+
   _renderCommentsSection(comments) {
     this._commentsComponent = new CommentsSection(comments);
     render(this._commentsContainer, this._commentsComponent, RenderPosition.BEFOREEND);
