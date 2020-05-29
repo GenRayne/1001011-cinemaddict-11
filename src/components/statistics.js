@@ -1,15 +1,17 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getHours, getMinutesLeft} from '../utils/common';
-import {getWatchedMovies} from '../utils/filter';
+import {getHours, getMinutesLeft, isChecked} from '../utils/common';
+import {TimePeriod, timePeriodToItemName} from '../const';
 
 const BAR_HEIGHT = 50;
+const FIRST_INDEX = 0;
+const SECOND_INDEX = 1;
 
 const chartProps = (genres) => {
-  const genresSorted = [...genres].sort((a, b) => b.count - a.count);
-  const labels = genresSorted.map((item) => item.name);
-  const data = genresSorted.map((item) => item.count);
+  const labels = genres.map((item) => item[FIRST_INDEX]);
+  const data = genres.map((item) => item[SECOND_INDEX]);
+
   return {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
@@ -19,7 +21,8 @@ const chartProps = (genres) => {
         data,
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
-        anchor: `start`
+        anchor: `start`,
+        barThickness: 24
       }]
     },
     options: {
@@ -45,7 +48,6 @@ const chartProps = (genres) => {
             display: false,
             drawBorder: false
           },
-          barThickness: 24
         }],
         xAxes: [{
           ticks: {
@@ -74,21 +76,29 @@ const calcGenreCount = (movies, genre) => {
 
 const getGenresQuantityData = (movies) => {
   const genres = movies
-    .reduce((acc, movie) => [...acc, ...movie.genres], [])
-    .filter((item, index, array) => array.indexOf(item) === index);
+    .reduce((acc, movie) => {
+      return (movie.genres.length) ? [...acc, ...movie.genres] : acc;
+    }, [])
+    .filter((item, index, array) => array.indexOf(item) === index)
+    .reduce((acc, genre) => {
+      return Object.assign(acc, {[genre]: calcGenreCount(movies, genre)});
+    }, {});
 
-  return genres.reduce((acc, genre) => {
-    acc.push({
-      name: genre,
-      count: calcGenreCount(movies, genre)
-    });
-    return acc;
-  }, []);
+  return Object.entries(genres)
+    .sort((a, b) => b[SECOND_INDEX] - a[SECOND_INDEX]);
 };
 
 // ============================================================================
 
-const createStatsMarkup = (watchedMovies, genresWithCount) => {
+const createRadiosMarkup = (name, period = TimePeriod.ALL) => {
+  const isActive = period ? isChecked(name === period) : TimePeriod;
+  return (
+    `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${name}" value="${name}" ${isActive}>
+    <label for="statistic-${name}" class="statistic__filters-label">${timePeriodToItemName[name]}</label>`
+  );
+};
+
+const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
   const watchedFilmsNumber = watchedMovies.length;
 
   const INITIAL_TIME_WATCHED = 0;
@@ -97,12 +107,14 @@ const createStatsMarkup = (watchedMovies, genresWithCount) => {
     return acc + movie.duration;
   }, INITIAL_TIME_WATCHED);
 
-  const favouriteGenre = genresWithCount.reduce((previousGenre, genre) => {
-    return (genre.count > previousGenre.count) ? genre : previousGenre;
-  }, {name: ``, count: 0});
+  const favouriteGenre = genresWithCount.length ? genresWithCount[FIRST_INDEX][FIRST_INDEX] : ``;
 
   const totalHoursDuration = getHours(totalDuration);
   const minutesLeft = getMinutesLeft(totalDuration);
+
+  const filterItems = Object.values(TimePeriod).map((item) => {
+    return createRadiosMarkup(item, period);
+  }).join(`\n`);
 
   return (
     `<section class="statistic">
@@ -114,61 +126,62 @@ const createStatsMarkup = (watchedMovies, genresWithCount) => {
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
         <p class="statistic__filters-description">Show stats:</p>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-        <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-        <label for="statistic-today" class="statistic__filters-label">Today</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-        <label for="statistic-week" class="statistic__filters-label">Week</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-        <label for="statistic-month" class="statistic__filters-label">Month</label>
-
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-        <label for="statistic-year" class="statistic__filters-label">Year</label>
+        ${filterItems}
       </form>
 
-      <ul class="statistic__text-list">
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">${watchedFilmsNumber} <span class="statistic__item-description">movies</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">${totalHoursDuration} <span class="statistic__item-description">h</span> ${minutesLeft} <span class="statistic__item-description">m</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">${favouriteGenre.name}</p>
-        </li>
-      </ul>
+      <section class="statistic__stats-container">
+        <ul class="statistic__text-list">
+          <li class="statistic__text-item">
+            <h4 class="statistic__item-title">You watched</h4>
+            <p class="statistic__item-text">${watchedFilmsNumber} <span class="statistic__item-description">movies</span></p>
+          </li>
+          <li class="statistic__text-item">
+            <h4 class="statistic__item-title">Total duration</h4>
+            <p class="statistic__item-text">${totalHoursDuration} <span class="statistic__item-description">h</span> ${minutesLeft} <span class="statistic__item-description">m</span></p>
+          </li>
+          <li class="statistic__text-item">
+            <h4 class="statistic__item-title">Top genre</h4>
+            <p class="statistic__item-text">${favouriteGenre}</p>
+          </li>
+        </ul>
 
-      <div class="statistic__chart-wrap">
-        <canvas class="statistic__chart" width="1000"></canvas>
-      </div>
+        <div class="statistic__chart-wrap">
+          <canvas class="statistic__chart" width="1000"></canvas>
+        </div>
+      </section>
 
     </section>`
   );
 };
 
 export default class Statistics extends AbstractSmartComponent {
-  constructor(movies) {
+  constructor(movies, period) {
     super();
     this._movies = movies;
-    this._watchedMovies = getWatchedMovies(this._movies);
-
-    this._genresData = getGenresQuantityData(this._watchedMovies);
+    this._genresData = getGenresQuantityData(this._movies);
+    this._activePeriod = period || TimePeriod.ALL;
   }
 
   getTemplate() {
-    return createStatsMarkup(this._watchedMovies, this._genresData);
+    return createStatsMarkup(this._movies, this._genresData, this._activePeriod);
+  }
+
+  setTimePeriodToggleHandler(handler) {
+    const radios = this.getElement().querySelectorAll(`input[name="statistic-filter"]`);
+    radios.forEach((item) => {
+      item.addEventListener(`change`, () => {
+        handler(item.value);
+        this._activePeriod = item.value;
+      });
+    });
+  }
+
+  getStatsElement() {
+    return this.getElement().querySelector(`.statistic__stats-container`);
   }
 
   renderChart() {
-    if (this._watchedMovies.length) {
+    if (this._movies.length) {
       const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
       statisticCtx.height = BAR_HEIGHT * this._genresData.length;
 

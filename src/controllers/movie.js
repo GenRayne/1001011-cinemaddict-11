@@ -5,10 +5,13 @@ import CommentsSection from '../components/comments-section';
 import FilmCard from '../components/film-card';
 import FilmDetails from '../components/film-details';
 import MovieModel from '../models/movie';
-import {encode} from "he";
+
 import {RenderPosition, Key, LoadingText} from '../const';
 import {render, remove, replace} from '../utils/render';
 import {stylizeInputError, stylizeBackToNormal, shake} from '../utils/common';
+
+import {encode} from "he";
+import moment from "moment";
 
 const Mode = {
   DEFAULT: `default`,
@@ -196,6 +199,10 @@ export default class MovieController {
     const oldMovieData = this._film;
     const newMovie = MovieModel.clone(movie);
     newMovie[key] = value;
+
+    if (key === MovieState.WATCHED) {
+      newMovie.watchingDate = value ? moment() : null;
+    }
     this._onDataChange(this, oldMovieData, newMovie);
   }
 

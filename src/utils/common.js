@@ -51,6 +51,12 @@ export const getDuration = (minutes) => {
   return hours ? `${hours}h ${minutesLeft}m` : `${minutes}m`;
 };
 
+export const filterByWatchingDates = (movies, date) => {
+  return movies.filter((movie) =>{
+    return moment(movie.watchingDate) > date;
+  });
+};
+
 // ============== Случайные значения ==============
 
 export const getRandomInteger = (max, min = 0) => Math.floor(Math.random() * (max - min)) + min;

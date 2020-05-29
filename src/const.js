@@ -1,8 +1,8 @@
-export const START_INDEX = 0;
-
 export const INPUT_ERROR_SHADOW = `inset 0 0 5px 0 red`;
 
 export const HIDDEN_CLASS = `visually-hidden`;
+
+export const START_INDEX = 0;
 
 export const SHAKE_TIMEOUT = 600;
 
@@ -59,6 +59,22 @@ export const UserRating = {
 export const RatingStep = {
   FIRST: 10,
   SECOND: 20,
+};
+
+export const TimePeriod = {
+  ALL: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+};
+
+export const timePeriodToItemName = {
+  [TimePeriod.ALL]: `All time`,
+  [TimePeriod.TODAY]: `Today`,
+  [TimePeriod.WEEK]: `Week`,
+  [TimePeriod.MONTH]: `Month`,
+  [TimePeriod.YEAR]: `Year`,
 };
 
 export const filterToNavItemName = {
