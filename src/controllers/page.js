@@ -10,7 +10,7 @@ import Sort, {SortType} from '../components/sort';
 
 import {getTopRated, getTopCommented} from '../utils/common';
 import {ExtraTitle, RenderPosition, START_INDEX} from '../const';
-import {render, remove} from '../utils/render';
+import {render, remove, replace} from '../utils/render';
 
 const SHOWN_FILMS_NUMBER_AT_START = 5;
 const SHOWN_FILMS_NUMBER_BY_BTN = 5;
@@ -236,6 +236,11 @@ export default class PageController {
   // --------------------------------------------------------------
 
   _onFilterChange() {
+    const oldSort = this._sort;
+    this._sort = new Sort();
+    replace(this._sort, oldSort);
+    this._sort.setSortTypeChangeHandler(this._onSortTypeChange);
+
     this._updateMovies(SHOWN_FILMS_NUMBER_AT_START);
   }
 
