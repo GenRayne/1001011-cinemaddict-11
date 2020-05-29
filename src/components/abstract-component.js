@@ -1,4 +1,4 @@
-import {AbstractComponentError} from '../const';
+import {AbstractComponentError, HIDDEN_CLASS} from '../const';
 import {createElement} from '../utils/render';
 
 const GET_TEMPLATE_NAME = `getTemplate`;
@@ -24,5 +24,13 @@ export default class AbstractComponent {
 
   removeElement() {
     this._element = null;
+  }
+
+  show() {
+    this.getElement().classList.remove(HIDDEN_CLASS);
+  }
+
+  hide() {
+    this.getElement().classList.add(HIDDEN_CLASS);
   }
 }

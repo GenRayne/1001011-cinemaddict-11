@@ -35,6 +35,11 @@ const createFilmDetailsTemplate = (film) => {
   const filmGenres = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`)
   .join(` `);
 
+  let genresLabel = ``;
+  if (genres.length > 0) {
+    genresLabel = genres.length > 1 ? `Genres` : `Genre`;
+  }
+
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -87,7 +92,7 @@ const createFilmDetailsTemplate = (film) => {
                   <td class="film-details__cell">${country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genresLabel}</td>
                   <td class="film-details__cell">
                     ${filmGenres}
                   </td>

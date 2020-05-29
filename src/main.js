@@ -45,15 +45,17 @@ render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 // =======================================================
 
 api.getMovies()
-  .then((movies) => {
-    moviesModel.setMovies(movies);
-    filmSection.render();
+.then((movies) => {
+  moviesModel.setMovies(movies);
+  filmSection.render();
 
-    const newFooterStats = new FooterStats(movies.length);
-    remove(footerStats.getElement());
-    render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
-  })
-  .catch(() => {
-    moviesModel.setMovies([]);
-    filmSection.render();
-  });
+  const newFooterStats = new FooterStats(movies.length);
+  remove(footerStats.getElement());
+  render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
+
+  filterController.render(filmSection);
+})
+.catch(() => {
+  moviesModel.setMovies([]);
+  filmSection.render();
+});

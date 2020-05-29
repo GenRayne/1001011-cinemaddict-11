@@ -1,8 +1,9 @@
 import AbstractComponent from './abstract-component';
 import {getWatchlistMovies, getWatchedMovies, getFavouriteMovies} from '../utils/filter';
-import {MoviesFilter, filterToNavItemName} from '../const';
+import {MoviesFilter, filterToNavItemName, MenuItem} from '../const';
 
 const FILTER_HREF_PREFIX = `#`;
+const ACTIVE_NAV_ITEM_CLASS = `main-navigation__item--active`;
 
 const filmsCount = (name, count) => {
   return (name !== MoviesFilter.ALL) ?
@@ -13,7 +14,11 @@ const filmsCount = (name, count) => {
 const createNavItem = (filter) => {
   const {name, count, isActive} = filter;
 
-  const activeClass = isActive ? `main-navigation__item--active` : ``;
+  if (name === MenuItem.STATS) {
+    return ``;
+  }
+
+  const activeClass = isActive ? ACTIVE_NAV_ITEM_CLASS : ``;
   const navItem = `${filterToNavItemName[name]} ${filmsCount(name, count)}`;
   return (
     `<a href="#${name}" class="main-navigation__item ${activeClass}"
@@ -25,6 +30,8 @@ const createMainMenuTemplate = (films, movieFilters) => {
   const watchlistFilmsNumber = getWatchlistMovies(films).length;
   const watchedFilmsNumber = getWatchedMovies(films).length;
   const favouriteFilmsNumber = getFavouriteMovies(films).length;
+
+  let activeStatsClass = ``;
 
   movieFilters.forEach((item) => {
     switch (item.name) {
@@ -40,6 +47,11 @@ const createMainMenuTemplate = (films, movieFilters) => {
       case MoviesFilter.FAVORITES:
         item.count = favouriteFilmsNumber;
         break;
+      case MenuItem.STATS:
+        activeStatsClass = item.isActive ? ACTIVE_NAV_ITEM_CLASS : ``;
+        break;
+      default:
+        return;
     }
   });
 
@@ -50,7 +62,7 @@ const createMainMenuTemplate = (films, movieFilters) => {
       <div class="main-navigation__items">
         ${navItems}
       </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
+      <a href="#stats" class="main-navigation__additional ${activeStatsClass}">Stats</a>
     </nav>`
   );
 };
@@ -74,7 +86,8 @@ export default class MainMenu extends AbstractComponent {
   setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       if (!evt.target.classList.contains(`main-navigation__item`) &&
-          !evt.target.classList.contains(`main-navigation__item-count`)) {
+          !evt.target.classList.contains(`main-navigation__item-count`) &&
+          !evt.target.classList.contains(`main-navigation__additional`)) {
         return;
       }
 
@@ -83,5 +96,10 @@ export default class MainMenu extends AbstractComponent {
 
       handler(filterName);
     });
+  }
+
+  setStatsClickHandler(handler) {
+    const statsButton = this.getElement().querySelector(`.main-navigation__additional`);
+    statsButton.addEventListener(`click`, handler);
   }
 }
