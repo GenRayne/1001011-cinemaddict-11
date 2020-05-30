@@ -46,7 +46,7 @@ const createFilmCardTemplate = (film) => {
   } = film;
 
   const releaseYear = moment(releaseDate).format(`YYYY`);
-  const genre = genres[0];
+  const genre = genres[0] || ``;
 
   let shortDescription = description;
   const filmDuration = getDuration(duration);

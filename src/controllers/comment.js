@@ -4,9 +4,10 @@ import {shake} from '../utils/common';
 import {RenderPosition, DeletingText} from '../const';
 
 export default class CommentController {
-  constructor(container, commentsModel, api, onCommentsChange) {
+  constructor(container, commentsModel, movie, api, onCommentsChange) {
     this._container = container;
     this._comment = null;
+    this._movie = movie;
     this._api = api;
     this._commentsModel = commentsModel;
     this._onCommentsChange = onCommentsChange;
@@ -33,7 +34,7 @@ export default class CommentController {
     evt.target.disabled = true;
     evt.target.textContent = DeletingText.LOADING;
 
-    this._api.deleteComment(this._comment.id)
+    this._api.deleteComment(this._comment.id, this._movie.id)
       .then(() => {
         this._commentsModel.removeComment(this._comment.id);
         this._onCommentsChange(null);

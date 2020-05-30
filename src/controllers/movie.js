@@ -237,7 +237,7 @@ export default class MovieController {
   }
 
   _createCommentController(comment) {
-    const commentController = new CommentController(this._container, this._commentsModel, this._api, this._onCommentsChange);
+    const commentController = new CommentController(this._container, this._commentsModel, this._film, this._api, this._onCommentsChange);
     this._commentControllers.push(commentController);
     commentController.render(comment);
   }
