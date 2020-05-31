@@ -1,6 +1,6 @@
 import CommentController from '../controllers/comment';
 import CommentModel from '../models/comment';
-import CommentsLoader from '../components/comment-loader';
+import CommentsLoader from '../components/comments-loader';
 import CommentsSection from '../components/comments-section';
 import FilmCard from '../components/film-card';
 import FilmDetails from '../components/film-details';

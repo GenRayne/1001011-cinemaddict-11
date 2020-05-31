@@ -20,9 +20,7 @@ export const LoadingText = {
 
 export const AbstractComponentError = {
   NEW: `A new component can't be an instance of AbstractComponent. Use 'extends' instead.`,
-  // Метод ниже в CamelCase, т.к. иначе при вызове ошибка линтера:
-  // "A function with a name starting with an uppercase letter should only be used as a constructor".
-  methodNotImplemented: (methodName) => `Abstract method should be implemented: ${methodName}.`
+  GET_TEMPLATE_NOT_IMPLEMENTED: `Abstract method should be implemented: getTemplate.`
 };
 
 export const RenderPosition = {

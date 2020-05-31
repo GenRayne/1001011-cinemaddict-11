@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component';
 
-export const SortType = {
+const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`
@@ -58,3 +58,5 @@ export default class Sort extends AbstractComponent {
     });
   }
 }
+
+export {SortType};

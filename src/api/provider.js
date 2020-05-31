@@ -2,7 +2,7 @@ import Movie from '../models/movie';
 
 const FAILED_SYNC_TEXT = `Synchronization failed`;
 
-export const isOnline = () => {
+const isOnline = () => {
   return window.navigator.onLine;
 };
 
@@ -82,3 +82,5 @@ export default class Provider {
     return Promise.reject(new Error(FAILED_SYNC_TEXT));
   }
 }
+
+export {isOnline};

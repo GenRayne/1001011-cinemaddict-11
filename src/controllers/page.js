@@ -1,5 +1,5 @@
 import Comments from '../models/comments';
-import FilmListHeading from '../components/films-list-heading';
+import FilmsListHeading from '../components/films-list-heading';
 import FilmsContainer from '../components/films-container';
 import FilmsExtra from '../components/films-extra';
 import FilmsList from '../components/films-list';
@@ -154,11 +154,11 @@ export default class PageController {
     const isEmpty = !movies.length;
 
     if (heading) {
-      this._filmListHeading = new FilmListHeading(!isEmpty, heading);
+      this._filmListHeading = new FilmsListHeading(!isEmpty, heading);
     } else {
       remove(this._filmListHeading.getElement());
       const isEmptyText = isEmpty ? NO_MOVIES_TEXT : undefined;
-      this._filmListHeading = new FilmListHeading(!isEmpty, isEmptyText);
+      this._filmListHeading = new FilmsListHeading(!isEmpty, isEmptyText);
     }
 
     render(this._filmsList.getElement(), this._filmListHeading, RenderPosition.AFTERBEGIN);

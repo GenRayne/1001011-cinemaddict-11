@@ -91,7 +91,7 @@ export default class MainMenu extends AbstractComponent {
         return;
       }
 
-      let target = evt.target.tagName === `A` ? evt.target : evt.target.closest(`a`);
+      const target = evt.target.tagName === `A` ? evt.target : evt.target.closest(`a`);
       const filterName = getFilterNameByHref(target.href);
 
       handler(filterName);

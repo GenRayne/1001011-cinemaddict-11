@@ -33,9 +33,11 @@ export const getUserRating = (movies) => {
 
   if (moviesWatched && moviesWatched <= RatingStep.FIRST) {
     userRating = UserRating.NOVICE;
+
   } else if (moviesWatched > RatingStep.FIRST
           && moviesWatched <= RatingStep.SECOND) {
     userRating = UserRating.FAN;
+
   } else if (moviesWatched > RatingStep.SECOND) {
     userRating = UserRating.MOVIE_BUFF;
   }

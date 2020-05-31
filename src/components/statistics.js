@@ -2,6 +2,7 @@ import AbstractComponent from "./abstract-component.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getHours, getMinutesLeft, isChecked, getUserRating} from '../utils/common';
+import {getWatchedMovies} from '../utils/filter';
 import {TimePeriod, timePeriodToItemName} from '../const';
 
 const BAR_HEIGHT = 50;
@@ -98,9 +99,9 @@ const createRadiosMarkup = (name, period = TimePeriod.ALL) => {
   );
 };
 
-const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
+const createStatsMarkup = (movies, watchedMovies, genresWithCount, period) => {
   const watchedFilmsNumber = watchedMovies.length;
-  const userRating = getUserRating(watchedMovies);
+  const userRating = getUserRating(getWatchedMovies(movies));
 
   const INITIAL_TIME_WATCHED = 0;
 
@@ -156,15 +157,16 @@ const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
 };
 
 export default class Statistics extends AbstractComponent {
-  constructor(movies, period) {
+  constructor(movies, watchedMovies, period) {
     super();
     this._movies = movies;
-    this._genresData = getGenresQuantityData(this._movies);
+    this._watchedMovies = watchedMovies;
+    this._genresData = getGenresQuantityData(this._watchedMovies);
     this._activePeriod = period || TimePeriod.ALL;
   }
 
   getTemplate() {
-    return createStatsMarkup(this._movies, this._genresData, this._activePeriod);
+    return createStatsMarkup(this._movies, this._watchedMovies, this._genresData, this._activePeriod);
   }
 
   setTimePeriodToggleHandler(handler) {
