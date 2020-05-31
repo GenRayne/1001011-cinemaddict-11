@@ -1,38 +1,30 @@
 export default class Movie {
-  constructor(data) {
-    this.id = data.id;
-    this.title = data[`film_info`].title;
-    this.alternativeTitle = data[`film_info`][`alternative_title`];
-    this.posterSrc = data[`film_info`].poster;
-    this.description = data[`film_info`].description;
+  constructor(movie) {
+    this.id = movie.id;
+    this.title = movie[`film_info`].title;
+    this.alternativeTitle = movie[`film_info`][`alternative_title`];
+    this.posterSrc = movie[`film_info`].poster;
+    this.description = movie[`film_info`].description;
 
-    this.age = data[`film_info`][`age_rating`];
-    this.genres = data[`film_info`].genre;
-    this.duration = data[`film_info`].runtime;
-    this.rating = data[`film_info`][`total_rating`];
+    this.age = movie[`film_info`][`age_rating`];
+    this.genres = movie[`film_info`].genre;
+    this.duration = movie[`film_info`].runtime;
+    this.rating = movie[`film_info`][`total_rating`];
 
-    this.releaseDate = new Date(data[`film_info`].release.date);
-    this.country = data[`film_info`].release[`release_country`];
+    this.releaseDate = new Date(movie[`film_info`].release.date);
+    this.country = movie[`film_info`].release[`release_country`];
 
-    this.director = data[`film_info`].director;
-    this.writers = data[`film_info`].writers;
-    this.actors = data[`film_info`].actors;
+    this.director = movie[`film_info`].director;
+    this.writers = movie[`film_info`].writers;
+    this.actors = movie[`film_info`].actors;
 
-    this.isInWatchlist = data[`user_details`].watchlist;
-    this.isWatched = data[`user_details`][`already_watched`];
-    this.isFavourite = data[`user_details`].favorite;
-    this.watchingDate = new Date(data[`user_details`][`watching_date`]);
+    this.isInWatchlist = movie[`user_details`].watchlist;
+    this.isWatched = movie[`user_details`][`already_watched`];
+    this.isFavourite = movie[`user_details`].favorite;
+    this.watchingDate = new Date(movie[`user_details`][`watching_date`]);
 
-    this.commentIds = data.comments;
+    this.commentIds = movie.comments;
     this.comments = [];
-  }
-
-  static parseMovie(data) {
-    return new Movie(data);
-  }
-
-  static parseMovies(data) {
-    return data.map(Movie.parseMovie);
   }
 
   toRAW() {
@@ -65,7 +57,17 @@ export default class Movie {
     };
   }
 
-  static clone(data) {
-    return new Movie(data.toRAW());
+  // ------------------------------------------------------
+
+  static parseMovie(movie) {
+    return new Movie(movie);
+  }
+
+  static parseMovies(movies) {
+    return movies.map(Movie.parseMovie);
+  }
+
+  static clone(movie) {
+    return new Movie(movie.toRAW());
   }
 }

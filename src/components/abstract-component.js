@@ -1,8 +1,6 @@
 import {AbstractComponentError, HIDDEN_CLASS} from '../const';
 import {createElement} from '../utils/render';
 
-const GET_TEMPLATE_NAME = `getTemplate`;
-
 export default class AbstractComponent {
   constructor() {
     if (new.target === AbstractComponent) {
@@ -12,7 +10,7 @@ export default class AbstractComponent {
   }
 
   getTemplate() {
-    throw new Error(AbstractComponentError.methodNotImplemented(GET_TEMPLATE_NAME));
+    throw new Error(AbstractComponentError.GET_TEMPLATE_NOT_IMPLEMENTED);
   }
 
   getElement() {

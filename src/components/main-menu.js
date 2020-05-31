@@ -79,9 +79,13 @@ export default class MainMenu extends AbstractComponent {
     this._filters = filters;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createMainMenuTemplate(this._films, this._filters);
   }
+
+  // ---------------------------- Слушатели ----------------------------
 
   setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
@@ -91,7 +95,7 @@ export default class MainMenu extends AbstractComponent {
         return;
       }
 
-      let target = evt.target.tagName === `A` ? evt.target : evt.target.closest(`a`);
+      const target = evt.target.tagName === `A` ? evt.target : evt.target.closest(`a`);
       const filterName = getFilterNameByHref(target.href);
 
       handler(filterName);

@@ -1,7 +1,8 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getHours, getMinutesLeft, isChecked} from '../utils/common';
+import {getHours, getMinutesLeft, isChecked, getUserRating} from '../utils/common';
+import {getWatchedMovies} from '../utils/filter';
 import {TimePeriod, timePeriodToItemName} from '../const';
 
 const BAR_HEIGHT = 50;
@@ -10,7 +11,7 @@ const SECOND_INDEX = 1;
 
 const chartProps = (genres) => {
   const labels = genres.map((item) => item[FIRST_INDEX]);
-  const data = genres.map((item) => item[SECOND_INDEX]);
+  const values = genres.map((item) => item[SECOND_INDEX]);
 
   return {
     plugins: [ChartDataLabels],
@@ -18,7 +19,7 @@ const chartProps = (genres) => {
     data: {
       labels,
       datasets: [{
-        data,
+        data: values,
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`,
@@ -98,8 +99,9 @@ const createRadiosMarkup = (name, period = TimePeriod.ALL) => {
   );
 };
 
-const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
+const createStatsMarkup = (movies, watchedMovies, genresWithCount, period) => {
   const watchedFilmsNumber = watchedMovies.length;
+  const userRating = getUserRating(getWatchedMovies(movies));
 
   const INITIAL_TIME_WATCHED = 0;
 
@@ -121,7 +123,7 @@ const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        <span class="statistic__rank-label">${userRating}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -154,17 +156,37 @@ const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
   );
 };
 
-export default class Statistics extends AbstractSmartComponent {
-  constructor(movies, period) {
+export default class Statistics extends AbstractComponent {
+  constructor(movies, watchedMovies, period) {
     super();
     this._movies = movies;
-    this._genresData = getGenresQuantityData(this._movies);
+    this._watchedMovies = watchedMovies;
+    this._genresData = getGenresQuantityData(this._watchedMovies);
     this._activePeriod = period || TimePeriod.ALL;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
-    return createStatsMarkup(this._movies, this._genresData, this._activePeriod);
+    return createStatsMarkup(this._movies, this._watchedMovies, this._genresData, this._activePeriod);
   }
+
+  getStatsElement() {
+    return this.getElement().querySelector(`.statistic__stats-container`);
+  }
+
+  // -------------------------------------------------------------------
+
+  renderChart() {
+    if (this._movies.length) {
+      const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
+      statisticCtx.height = BAR_HEIGHT * this._genresData.length;
+
+      this._newChart = new Chart(statisticCtx, chartProps(this._genresData));
+    }
+  }
+
+  // ---------------------------- Слушатели ----------------------------
 
   setTimePeriodToggleHandler(handler) {
     const radios = this.getElement().querySelectorAll(`input[name="statistic-filter"]`);
@@ -176,16 +198,4 @@ export default class Statistics extends AbstractSmartComponent {
     });
   }
 
-  getStatsElement() {
-    return this.getElement().querySelector(`.statistic__stats-container`);
-  }
-
-  renderChart() {
-    if (this._movies.length) {
-      const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
-      statisticCtx.height = BAR_HEIGHT * this._genresData.length;
-
-      this._newChart = new Chart(statisticCtx, chartProps(this._genresData));
-    }
-  }
 }

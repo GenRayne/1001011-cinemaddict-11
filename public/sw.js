@@ -3,8 +3,9 @@ const CACHE_VER = `v1`;
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
 
 const Method = {
+  DELETE: `DELETE`,
   POST: `POST`,
-  DELETE: `DELETE`
+  PUT: `PUT`,
 };
 
 const getResponseData = (request) => {
@@ -17,7 +18,8 @@ const getResponseData = (request) => {
       return fetch(request)
         .then((response) => {
           if (!response || response.status !== 200 ||
-              request.method === Method.DELETE || request.method === Method.POST) {
+              request.method === Method.DELETE || request.method === Method.POST ||
+              request.method === Method.PUT) {
             return response;
           }
 

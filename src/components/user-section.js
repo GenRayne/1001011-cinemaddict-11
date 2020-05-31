@@ -1,21 +1,8 @@
 import AbstractComponent from './abstract-component';
-import {UserRating, RatingStep} from '../const';
+import {getUserRating} from '../utils/common';
 
-const createUserSectionTemplate = (films) => {
-  const filmsWatched = films.filter((film) => {
-    return film.isWatched;
-  }).length;
-
-  let userRating = ``;
-
-  if (filmsWatched && filmsWatched <= RatingStep.FIRST) {
-    userRating = UserRating.NOVICE;
-  } else if (filmsWatched > RatingStep.FIRST
-          && filmsWatched <= RatingStep.SECOND) {
-    userRating = UserRating.FAN;
-  } else if (filmsWatched > RatingStep.SECOND) {
-    userRating = UserRating.MOVIE_BUFF;
-  }
+const createUserSectionTemplate = (movies) => {
+  const userRating = getUserRating(movies);
 
   return (
     `<section class="header__profile profile">
@@ -26,12 +13,12 @@ const createUserSectionTemplate = (films) => {
 };
 
 export default class UserSection extends AbstractComponent {
-  constructor(films) {
+  constructor(movies) {
     super();
-    this._films = films;
+    this._movies = movies;
   }
 
   getTemplate() {
-    return createUserSectionTemplate(this._films);
+    return createUserSectionTemplate(this._movies);
   }
 }

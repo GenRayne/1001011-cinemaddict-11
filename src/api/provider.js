@@ -2,7 +2,7 @@ import Movie from '../models/movie';
 
 const FAILED_SYNC_TEXT = `Synchronization failed`;
 
-export const isOnline = () => {
+const isOnline = () => {
   return window.navigator.onLine;
 };
 
@@ -12,10 +12,6 @@ export default class Provider {
     this._store = store;
 
     this._isChangedOffline = false;
-  }
-
-  checkIfChangeOffline() {
-    return this._isChangedOffline;
   }
 
   getMovies() {
@@ -36,26 +32,28 @@ export default class Provider {
     return Promise.resolve(parsedMovies);
   }
 
-  updateMovie(id, data) {
-    if (isOnline()) {
-      return this._api.updateMovie(id, data)
-        .then((newMovie) => {
-          this._store.setItem(newMovie.id, newMovie.toRAW());
-          return newMovie;
-        });
-    }
-    const localMovie = Movie.clone(Object.assign(data, {id}));
-    this._store.setItem(id, localMovie.toRAW());
-
-    this._isChangedOffline = true;
-    return Promise.resolve(localMovie);
-  }
-
   getMovieComments(movieId) {
     return this._api.getMovieComments(movieId)
     .catch(() => {
       return Promise.resolve([]);
     });
+  }
+
+  // -------------------------------------------------------------
+
+  updateMovie(id, movie) {
+    if (isOnline()) {
+      return this._api.updateMovie(id, movie)
+        .then((newMovie) => {
+          this._store.setItem(newMovie.id, newMovie.toRAW());
+          return newMovie;
+        });
+    }
+    const localMovie = Movie.clone(Object.assign(movie, {id}));
+    this._store.setItem(id, localMovie.toRAW());
+
+    this._isChangedOffline = true;
+    return Promise.resolve(localMovie);
   }
 
   createComment(newComment, movieId) {
@@ -65,6 +63,12 @@ export default class Provider {
   deleteComment(commentId) {
     return this._api.deleteComment(commentId);
   }
+
+  checkIfChangedOffline() {
+    return this._isChangedOffline;
+  }
+
+  // -------------------------------------------------------------
 
   sync() {
     if (isOnline()) {
@@ -82,3 +86,5 @@ export default class Provider {
     return Promise.reject(new Error(FAILED_SYNC_TEXT));
   }
 }
+
+export {isOnline};

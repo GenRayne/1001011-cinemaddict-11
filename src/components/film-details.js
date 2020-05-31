@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import {
   formatLongDate,
   getDuration,
@@ -144,32 +144,28 @@ const createFilmDetailsTemplate = (film) => {
 
 // ================================================================================
 
-export default class FilmDetails extends AbstractSmartComponent {
+export default class FilmDetails extends AbstractComponent {
   constructor(film) {
     super();
     this._film = film;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
   }
 
-  rerender() {
-    super.rerender(this);
-  }
-
-  recoverListeners() {
-    this.setCloseBtnClickHandler(this._closeBtnClickHandler);
-    this.setWatchlistBtnClickHandler(this._watchlistBtnClickHandler);
-    this.setWatchedBtnClickHandler(this._watchedBtnClickHandler);
-    this.setFavouriteBtnClickHandler(this._favouriteBtnClickHandler);
-  }
-
-  // -------------------------------------------------------------------------
-
   getCommentsSectionContainer() {
     return this.getElement().querySelector(`.form-details__bottom-container`);
   }
+
+  getFormData() {
+    const form = this.getElement().querySelector(`.film-details__inner`);
+    return new FormData(form);
+  }
+
+  // ----------------------------- Слушатели -----------------------------
 
   setFormSubmitHandler(handler) {
     this._onCommentSubmit = (evt) => {
@@ -189,7 +185,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     }
   }
 
-  // ------------------------------- Слушатели -------------------------------
+  // ----------------------------------------
 
   setCloseBtnClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
@@ -217,12 +213,5 @@ export default class FilmDetails extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
 
     this._favouriteBtnClickHandler = handler;
-  }
-
-  // -------------------------------------------------------------------------
-
-  getData() {
-    const form = this.getElement().querySelector(`.film-details__inner`);
-    return new FormData(form);
   }
 }

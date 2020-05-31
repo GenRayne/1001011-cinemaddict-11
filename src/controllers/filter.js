@@ -1,7 +1,6 @@
 import MainMenu from '../components/main-menu';
 import Statistics from '../components/statistics';
-import {getMoviesByFilter, getWatchedMovies} from '../utils/filter';
-import {filterByWatchingDates} from '../utils/common';
+import {getMoviesByFilter, getWatchedMovies, filterByWatchingDates} from '../utils/filter';
 import {MoviesFilter, RenderPosition, MenuItem, TimePeriod} from '../const';
 import {render, replace, remove} from '../utils/render';
 import moment from "moment";
@@ -25,57 +24,14 @@ export default class FilterController {
     this._moviesModel.setDataChangeHandler(this._onDataChange);
   }
 
-  _onFilterChange(filterType) {
-    this._setActiveFilter(filterType);
-
-    if (this._filmSection) {
-      if (filterType === MenuItem.STATS) {
-        this._watchedMovies = getWatchedMovies(this._moviesModel.getMovies());
-        this._renderStatsPage(this._watchedMovies);
-
-      } else if (this._statisticsComponent) {
-        this._statisticsComponent.hide();
-        this._filmSection.show();
-      }
-    }
-
-    this.render();
-  }
-
-  _onStatsTimePeriodChange(timePeriod) {
-    this._statsElement = this._statisticsComponent.getStatsElement();
-    const dateToday = moment({hour: 0, minute: 0, seconds: 0});
-
-    switch (timePeriod) {
-      case TimePeriod.TODAY:
-        const moviesToday = filterByWatchingDates(this._watchedMovies, dateToday);
-        this._renderStatsPage(moviesToday, timePeriod);
-        break;
-      case TimePeriod.WEEK:
-        const moviesThisWeek = filterByWatchingDates(this._watchedMovies, dateToday.subtract(1, `week`));
-        this._renderStatsPage(moviesThisWeek, timePeriod);
-        break;
-      case TimePeriod.MONTH:
-        const moviesThisMonth = filterByWatchingDates(this._watchedMovies, dateToday.subtract(1, `month`));
-        this._renderStatsPage(moviesThisMonth, timePeriod);
-        break;
-      case TimePeriod.YEAR:
-        const moviesThisYear = filterByWatchingDates(this._watchedMovies, dateToday.subtract(1, `year`));
-        this._renderStatsPage(moviesThisYear, timePeriod);
-        break;
-      default:
-        this._renderStatsPage(this._watchedMovies);
-    }
-  }
+  // ------------------------------- Set -------------------------------
 
   _setActiveFilter(filterType) {
     this._activeFilterType = filterType;
     this._moviesModel.setFilter(filterType);
   }
 
-  _onDataChange() {
-    this.render();
-  }
+  // -------------------------------------------------------------------
 
   render(filmSection) {
     if (filmSection) {
@@ -100,17 +56,67 @@ export default class FilterController {
     }
   }
 
-  _renderStatsPage(movies, period) {
+  _renderStatsPage(movies, watchedMovies, period) {
     if (this._statisticsComponent) {
       remove(this._statisticsComponent.getElement());
     }
 
-    this._statisticsComponent = new Statistics(movies, period);
+    this._statisticsComponent = new Statistics(movies, watchedMovies, period);
     render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
     this._statisticsComponent.renderChart();
     this._statisticsComponent.setTimePeriodToggleHandler(this._onStatsTimePeriodChange);
 
     this._filmSection.hide();
     this._statisticsComponent.show();
+  }
+
+  // --------------------------- Обработчики ---------------------------
+
+  _onFilterChange(filterType) {
+    this._setActiveFilter(filterType);
+
+    if (this._filmSection) {
+      if (filterType === MenuItem.STATS) {
+        this._movies = this._moviesModel.getMovies();
+        this._watchedMovies = getWatchedMovies(this._movies);
+        this._renderStatsPage(this._movies, this._watchedMovies);
+
+      } else if (this._statisticsComponent) {
+        this._statisticsComponent.hide();
+        this._filmSection.show();
+      }
+    }
+
+    this.render();
+  }
+
+  _onStatsTimePeriodChange(timePeriod) {
+    this._statsElement = this._statisticsComponent.getStatsElement();
+    const dateToday = moment({hour: 0, minute: 0, seconds: 0});
+
+    switch (timePeriod) {
+      case TimePeriod.TODAY:
+        const moviesToday = filterByWatchingDates(this._watchedMovies, dateToday);
+        this._renderStatsPage(this._movies, moviesToday, timePeriod);
+        break;
+      case TimePeriod.WEEK:
+        const moviesThisWeek = filterByWatchingDates(this._watchedMovies, dateToday.subtract(1, `week`));
+        this._renderStatsPage(this._movies, moviesThisWeek, timePeriod);
+        break;
+      case TimePeriod.MONTH:
+        const moviesThisMonth = filterByWatchingDates(this._watchedMovies, dateToday.subtract(1, `month`));
+        this._renderStatsPage(this._movies, moviesThisMonth, timePeriod);
+        break;
+      case TimePeriod.YEAR:
+        const moviesThisYear = filterByWatchingDates(this._watchedMovies, dateToday.subtract(1, `year`));
+        this._renderStatsPage(this._movies, moviesThisYear, timePeriod);
+        break;
+      default:
+        this._renderStatsPage(this._movies, this._watchedMovies, timePeriod);
+    }
+  }
+
+  _onDataChange() {
+    this.render();
   }
 }
