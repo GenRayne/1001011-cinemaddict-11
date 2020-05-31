@@ -210,7 +210,7 @@ export default class FilmDetails extends AbstractComponent {
 
   // -------------------------------------------------------------------------
 
-  getData() {
+  getFormData() {
     const form = this.getElement().querySelector(`.film-details__inner`);
     return new FormData(form);
   }

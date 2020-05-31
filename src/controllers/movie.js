@@ -133,8 +133,8 @@ export default class MovieController {
 
     this._commentsComponent.setEmojiClickHandler(this._onEmojiSelect);
     this._filmDetailsComponent.setFormSubmitHandler(() => {
-      const data = this._filmDetailsComponent.getData();
-      this._onCommentsChange(data);
+      const formData = this._filmDetailsComponent.getFormData();
+      this._onCommentsChange(formData);
     });
   }
 

@@ -1,22 +1,22 @@
 export default class Comment {
-  constructor(data) {
-    this.id = data.id;
-    this.username = data.author;
-    this.emoji = data.emotion;
-    this.message = data.comment;
-    this.date = new Date(data.date);
+  constructor(comment) {
+    this.id = comment.id;
+    this.username = comment.author;
+    this.emoji = comment.emotion;
+    this.message = comment.comment;
+    this.date = new Date(comment.date);
   }
 
-  static parseComment(data) {
-    return new Comment(data);
+  static parseComment(comment) {
+    return new Comment(comment);
   }
 
   static parseComments(comments) {
     return comments.map(Comment.parseComment);
   }
 
-  static parseUpdatedComments(data) {
-    const {comments} = data;
+  static parseUpdatedComments(movieData) {
+    const {comments} = movieData;
     return comments.map(Comment.parseComment);
   }
 
@@ -30,7 +30,7 @@ export default class Comment {
     };
   }
 
-  static clone(data) {
-    return new Comment(data.toRAW());
+  static clone(comment) {
+    return new Comment(comment.toRAW());
   }
 }

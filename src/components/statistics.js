@@ -10,7 +10,7 @@ const SECOND_INDEX = 1;
 
 const chartProps = (genres) => {
   const labels = genres.map((item) => item[FIRST_INDEX]);
-  const data = genres.map((item) => item[SECOND_INDEX]);
+  const values = genres.map((item) => item[SECOND_INDEX]);
 
   return {
     plugins: [ChartDataLabels],
@@ -18,7 +18,7 @@ const chartProps = (genres) => {
     data: {
       labels,
       datasets: [{
-        data,
+        data: values,
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`,

@@ -44,11 +44,11 @@ export default class API {
       .then((Comment.parseComments));
   }
 
-  updateMovie(id, data) {
+  updateMovie(id, movie) {
     return this._load({
       url: `movies/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(data.toRAW()),
+      body: JSON.stringify(movie.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())

@@ -36,15 +36,15 @@ export default class Provider {
     return Promise.resolve(parsedMovies);
   }
 
-  updateMovie(id, data) {
+  updateMovie(id, movie) {
     if (isOnline()) {
-      return this._api.updateMovie(id, data)
+      return this._api.updateMovie(id, movie)
         .then((newMovie) => {
           this._store.setItem(newMovie.id, newMovie.toRAW());
           return newMovie;
         });
     }
-    const localMovie = Movie.clone(Object.assign(data, {id}));
+    const localMovie = Movie.clone(Object.assign(movie, {id}));
     this._store.setItem(id, localMovie.toRAW());
 
     this._isChangedOffline = true;
