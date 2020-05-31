@@ -112,25 +112,21 @@ export default class PageController {
   }
 
   _renderExtras(topRated, topCommented) {
-    if (topRated.length) {
-      this._shownTopRatedMovieControllers = renderFilms(
-          this._filmsTopRatedContainer.getElement(),
-          topRated,
-          this._api,
-          this._onDataChange,
-          this._onViewChange
-      );
-    }
+    this._shownTopRatedMovieControllers = renderFilms(
+        this._filmsTopRatedContainer.getElement(),
+        topRated,
+        this._api,
+        this._onDataChange,
+        this._onViewChange
+    );
 
-    if (topCommented.length) {
-      this._shownTopCommentedMovieControllers = renderFilms(
-          this._filmsTopCommentedContainer.getElement(),
-          topCommented,
-          this._api,
-          this._onDataChange,
-          this._onViewChange
-      );
-    }
+    this._shownTopCommentedMovieControllers = renderFilms(
+        this._filmsTopCommentedContainer.getElement(),
+        topCommented,
+        this._api,
+        this._onDataChange,
+        this._onViewChange
+    );
   }
 
   _removeMovies() {
@@ -188,10 +184,14 @@ export default class PageController {
 
     this._renderExtras(topRated, topCommented);
 
-    render(this._filmsTopRated.getElement(), this._filmsTopRatedContainer, RenderPosition.BEFOREEND);
-    render(this._filmsTopCommented.getElement(), this._filmsTopCommentedContainer, RenderPosition.BEFOREEND);
-    render(this._filmsSection.getElement(), this._filmsTopRated, RenderPosition.BEFOREEND);
-    render(this._filmsSection.getElement(), this._filmsTopCommented, RenderPosition.BEFOREEND);
+    if (topRated.length) {
+      render(this._filmsTopRated.getElement(), this._filmsTopRatedContainer, RenderPosition.BEFOREEND);
+      render(this._filmsSection.getElement(), this._filmsTopRated, RenderPosition.BEFOREEND);
+    }
+    if (topCommented.length) {
+      render(this._filmsTopCommented.getElement(), this._filmsTopCommentedContainer, RenderPosition.BEFOREEND);
+      render(this._filmsSection.getElement(), this._filmsTopCommented, RenderPosition.BEFOREEND);
+    }
   }
 
   // --------------------------------------------------------------

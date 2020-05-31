@@ -3,11 +3,13 @@ import {START_INDEX, INPUT_ERROR_SHADOW, SHAKE_TIMEOUT, MINUTES_IN_HOUR} from '.
 
 export const getTopRated = (films, count) => films.slice()
   .sort((a, b) => b.rating - a.rating)
-  .slice(START_INDEX, count);
+  .slice(START_INDEX, count)
+  .filter((item) => item.rating);
 
 export const getTopCommented = (films, count) => films.slice()
   .sort((a, b) => b.comments.length - a.comments.length)
-  .slice(START_INDEX, count);
+  .slice(START_INDEX, count)
+  .filter((item) => item.commentIds.length);
 
 // ==================== Разное ====================
 
