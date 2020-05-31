@@ -5,7 +5,6 @@ import FilterController from './controllers/filter-controller';
 import FooterStats from './components/footer-stats';
 import Movies from './models/movies';
 import PageController from './controllers/page-controller';
-import UserSection from './components/user-section';
 
 import {render, remove} from './utils/render';
 import {RenderPosition, LoadingText} from './const';
@@ -25,7 +24,6 @@ const OFFLINE_TITLE_POSTFIX = ` [offline]`;
 
 // -------------------------------------------------------
 
-const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
@@ -58,8 +56,6 @@ render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 apiWithProvider.getMovies()
   .then((movies) => {
     moviesModel.setMovies(movies);
-    const userSectionElement = new UserSection(movies);
-    render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
 
     filmSection.render();
 

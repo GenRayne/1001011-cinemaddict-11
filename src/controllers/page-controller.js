@@ -7,6 +7,7 @@ import FilmsSection from '../components/films-section';
 import MoreBtn from '../components/more-btn';
 import MovieController from '../controllers/movie-controller';
 import Sort, {SortType} from '../components/sort';
+import UserSection from '../components/user-section';
 
 import {getTopRated, getTopCommented} from '../utils/common';
 import {ExtraTitle, RenderPosition, START_INDEX} from '../const';
@@ -21,6 +22,7 @@ const EXTRA_FILMS_NUMBER = 2;
 const NO_MOVIES_TEXT = `There are no movies in our database`;
 
 const siteMainElement = document.querySelector(`.main`);
+const siteHeaderElement = document.querySelector(`.header`);
 
 // =============================================================
 
@@ -61,6 +63,8 @@ export default class PageController {
     this._container = container;
     this._moviesModel = moviesModel;
     this._api = api;
+
+    this._userSection = null;
 
     const movies = this._moviesModel.getMovies();
     const topRated = getTopRated(movies, EXTRA_FILMS_NUMBER);
@@ -112,6 +116,8 @@ export default class PageController {
     const movies = this._moviesModel.getMovies();
     const topRated = getTopRated(movies, EXTRA_FILMS_NUMBER);
     const topCommented = getTopCommented(movies, EXTRA_FILMS_NUMBER);
+
+    this._renderUserSection(movies);
 
     render(siteMainElement, this._sort, RenderPosition.BEFOREEND);
     render(this._container, this._filmsSection, RenderPosition.BEFOREEND);
@@ -205,6 +211,14 @@ export default class PageController {
     this._moreBtnElement.setClickHandler(this._onMoreButtonClick);
   }
 
+  _renderUserSection(movies) {
+    if (this._userSection) {
+      remove(this._userSection.getElement());
+    }
+    this._userSection = new UserSection(movies);
+    render(siteHeaderElement, this._userSection, RenderPosition.BEFOREEND);
+  }
+
   // --------------------------------------------------------------
 
   _removeMovies() {
@@ -247,6 +261,10 @@ export default class PageController {
         }
         if (topCommentedController) {
           topCommentedController.render(movieModel);
+        }
+
+        if (oldData.isWatched !== movieModel.isWatched) {
+          this._renderUserSection(this._moviesModel.getMovies());
         }
       });
   }
