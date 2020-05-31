@@ -280,6 +280,7 @@ export default class PageController {
 
   _renderLoadMoreBtn() {
     if (this._shownFilmsNumber >= this._moviesModel.getMovies().length) {
+      remove(this._moreBtnElement.getElement());
       return;
     }
     render(this._filmsList.getElement(), this._moreBtnElement, RenderPosition.BEFOREEND);

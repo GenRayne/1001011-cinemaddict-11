@@ -1,4 +1,6 @@
-import API from './api';
+import API from './api/index';
+import Provider from './api/provider';
+import Store from './api/store';
 import FilterController from './controllers/filter';
 import FooterStats from './components/footer-stats';
 import Movies from './models/movies';
@@ -13,7 +15,15 @@ const NO_MOVIES = 0;
 const AUTHORIZATION = `Basic fFaDKd395hd8gaHh57`;
 const END_POINT = `https://11.ecmascript.pages.academy/cinemaddict`;
 
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
+const OFFLINE_TITLE_POSTFIX = ` [offline]`;
+
 const api = new API(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 // =======================================================
 
@@ -27,7 +37,7 @@ const userSectionElement = new UserSection([]);
 const moviesModel = new Movies();
 
 const filterController = new FilterController(siteMainElement, moviesModel);
-const filmSection = new PageController(siteMainElement, moviesModel, api);
+const filmSection = new PageController(siteMainElement, moviesModel, apiWithProvider);
 
 const footerStats = new FooterStats(NO_MOVIES);
 
@@ -44,7 +54,7 @@ render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 
 // =======================================================
 
-api.getMovies()
+apiWithProvider.getMovies()
 .then((movies) => {
   moviesModel.setMovies(movies);
   filmSection.render();
@@ -58,4 +68,23 @@ api.getMovies()
 .catch(() => {
   moviesModel.setMovies([]);
   filmSection.render();
+});
+
+// =======================================================
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`./sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(OFFLINE_TITLE_POSTFIX, ``);
+
+  const isChangedOffline = apiWithProvider.checkIfChangeOffline();
+  if (isChangedOffline) {
+    apiWithProvider.sync();
+  }
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += OFFLINE_TITLE_POSTFIX;
 });

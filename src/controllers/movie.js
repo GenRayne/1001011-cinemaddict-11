@@ -12,6 +12,7 @@ import {stylizeInputError, stylizeBackToNormal, shake} from '../utils/common';
 
 import {encode} from "he";
 import moment from "moment";
+import {isOnline} from '../api/provider';
 
 const Mode = {
   DEFAULT: `default`,
@@ -172,14 +173,16 @@ export default class MovieController {
 
     this._api.getMovieComments(this._film.id)
       .then((comments) => {
+        if (!isOnline()) {
+          this._renderGetCommentsError(commentsLoader);
+          return;
+        }
         remove(commentsLoader.getElement());
         this._commentsModel.setComments(comments);
         this._renderCommentsSection(comments);
       })
       .catch(() => {
-        remove(commentsLoader.getElement());
-        const errorCommentsLoader = new CommentsLoader(LoadingText.COMMENTS_ERROR);
-        render(this._commentsContainer, errorCommentsLoader, RenderPosition.BEFOREEND);
+        this._renderGetCommentsError(commentsLoader);
       });
 
 
@@ -234,6 +237,12 @@ export default class MovieController {
   _renderComments(comments) {
     this._container = this._commentsComponent.getCommentsContainer();
     comments.forEach(this._createCommentController);
+  }
+
+  _renderGetCommentsError(commentsLoader) {
+    remove(commentsLoader.getElement());
+    const errorCommentsLoader = new CommentsLoader(LoadingText.COMMENTS_ERROR);
+    render(this._commentsContainer, errorCommentsLoader, RenderPosition.BEFOREEND);
   }
 
   _createCommentController(comment) {
