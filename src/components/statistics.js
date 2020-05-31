@@ -165,9 +165,28 @@ export default class Statistics extends AbstractComponent {
     this._activePeriod = period || TimePeriod.ALL;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createStatsMarkup(this._movies, this._watchedMovies, this._genresData, this._activePeriod);
   }
+
+  getStatsElement() {
+    return this.getElement().querySelector(`.statistic__stats-container`);
+  }
+
+  // -------------------------------------------------------------------
+
+  renderChart() {
+    if (this._movies.length) {
+      const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
+      statisticCtx.height = BAR_HEIGHT * this._genresData.length;
+
+      this._newChart = new Chart(statisticCtx, chartProps(this._genresData));
+    }
+  }
+
+  // ---------------------------- Слушатели ----------------------------
 
   setTimePeriodToggleHandler(handler) {
     const radios = this.getElement().querySelectorAll(`input[name="statistic-filter"]`);
@@ -179,16 +198,4 @@ export default class Statistics extends AbstractComponent {
     });
   }
 
-  getStatsElement() {
-    return this.getElement().querySelector(`.statistic__stats-container`);
-  }
-
-  renderChart() {
-    if (this._movies.length) {
-      const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
-      statisticCtx.height = BAR_HEIGHT * this._genresData.length;
-
-      this._newChart = new Chart(statisticCtx, chartProps(this._genresData));
-    }
-  }
 }

@@ -10,6 +10,8 @@ import UserSection from './components/user-section';
 import {render, remove} from './utils/render';
 import {RenderPosition, LoadingText} from './const';
 
+// =======================================================
+
 const NO_MOVIES = 0;
 
 const AUTHORIZATION = `Basic fFaDKd395hd8gaHh57`;
@@ -21,15 +23,17 @@ const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const OFFLINE_TITLE_POSTFIX = ` [offline]`;
 
-const api = new API(END_POINT, AUTHORIZATION);
-const store = new Store(STORE_NAME, window.localStorage);
-const apiWithProvider = new Provider(api, store);
-
-// =======================================================
+// -------------------------------------------------------
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
+
+// =======================================================
+
+const api = new API(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 // -------------------------------------------------------
 
@@ -52,23 +56,23 @@ render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 // =======================================================
 
 apiWithProvider.getMovies()
-.then((movies) => {
-  moviesModel.setMovies(movies);
-  const userSectionElement = new UserSection(movies);
-  render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
+  .then((movies) => {
+    moviesModel.setMovies(movies);
+    const userSectionElement = new UserSection(movies);
+    render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
 
-  filmSection.render();
+    filmSection.render();
 
-  const newFooterStats = new FooterStats(movies.length);
-  remove(footerStats.getElement());
-  render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
+    const newFooterStats = new FooterStats(movies.length);
+    remove(footerStats.getElement());
+    render(siteFooterElement, newFooterStats, RenderPosition.BEFOREEND);
 
-  filterController.render(filmSection);
-})
-.catch(() => {
-  moviesModel.setMovies([]);
-  filmSection.render();
-});
+    filterController.render(filmSection);
+  })
+  .catch(() => {
+    moviesModel.setMovies([]);
+    filmSection.render();
+  });
 
 // =======================================================
 
@@ -79,7 +83,7 @@ window.addEventListener(`load`, () => {
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(OFFLINE_TITLE_POSTFIX, ``);
 
-  const isChangedOffline = apiWithProvider.checkIfChangeOffline();
+  const isChangedOffline = apiWithProvider.checkIfChangedOffline();
   if (isChangedOffline) {
     apiWithProvider.sync();
   }

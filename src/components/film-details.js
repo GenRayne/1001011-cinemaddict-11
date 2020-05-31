@@ -150,15 +150,22 @@ export default class FilmDetails extends AbstractComponent {
     this._film = film;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
   }
 
-  // -------------------------------------------------------------------------
-
   getCommentsSectionContainer() {
     return this.getElement().querySelector(`.form-details__bottom-container`);
   }
+
+  getFormData() {
+    const form = this.getElement().querySelector(`.film-details__inner`);
+    return new FormData(form);
+  }
+
+  // ----------------------------- Слушатели -----------------------------
 
   setFormSubmitHandler(handler) {
     this._onCommentSubmit = (evt) => {
@@ -178,7 +185,7 @@ export default class FilmDetails extends AbstractComponent {
     }
   }
 
-  // ------------------------------- Слушатели -------------------------------
+  // ----------------------------------------
 
   setCloseBtnClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
@@ -206,12 +213,5 @@ export default class FilmDetails extends AbstractComponent {
       .addEventListener(`click`, handler);
 
     this._favouriteBtnClickHandler = handler;
-  }
-
-  // -------------------------------------------------------------------------
-
-  getFormData() {
-    const form = this.getElement().querySelector(`.film-details__inner`);
-    return new FormData(form);
   }
 }

@@ -7,6 +7,16 @@ export default class Comment {
     this.date = new Date(comment.date);
   }
 
+  toRAW() {
+    return {
+      'id': this.id,
+      'author': this.username,
+      'comment': this.message,
+      'date': this.date,
+      'emotion': this.emoji,
+    };
+  }
+
   static parseComment(comment) {
     return new Comment(comment);
   }
@@ -18,16 +28,6 @@ export default class Comment {
   static parseUpdatedComments(movieData) {
     const {comments} = movieData;
     return comments.map(Comment.parseComment);
-  }
-
-  toRAW() {
-    return {
-      'id': this.id,
-      'author': this.username,
-      'comment': this.message,
-      'date': this.date,
-      'emotion': this.emoji,
-    };
   }
 
   static clone(comment) {

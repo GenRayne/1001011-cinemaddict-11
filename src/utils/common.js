@@ -74,35 +74,3 @@ export const getDuration = (minutes) => {
   const minutesLeft = getMinutesLeft(minutes);
   return hours ? `${hours}h ${minutesLeft}m` : `${minutes}m`;
 };
-
-export const filterByWatchingDates = (movies, date) => {
-  return movies.filter((movie) =>{
-    return moment(movie.watchingDate) > date;
-  });
-};
-
-// ============== Случайные значения ==============
-
-export const getRandomInteger = (max, min = 0) => Math.floor(Math.random() * (max - min)) + min;
-
-export const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomInteger(array.length);
-  return array[randomIndex];
-};
-
-export const getRandomBoolean = () => Math.random() > 0.5;
-
-export const getRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-};
-
-export const getRandomArrayFromArray = (array, max, min) => {
-  const randomArray = [];
-  while (randomArray.length <= getRandomInteger(max, min)) {
-    const newItem = getRandomArrayItem(array);
-    if (randomArray.indexOf(newItem) === -1) {
-      randomArray.push(newItem);
-    }
-  }
-  return randomArray;
-};

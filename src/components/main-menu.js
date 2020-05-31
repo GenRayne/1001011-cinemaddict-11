@@ -79,9 +79,13 @@ export default class MainMenu extends AbstractComponent {
     this._filters = filters;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createMainMenuTemplate(this._films, this._filters);
   }
+
+  // ---------------------------- Слушатели ----------------------------
 
   setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {

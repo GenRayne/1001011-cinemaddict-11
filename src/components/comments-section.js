@@ -43,16 +43,10 @@ export default class CommentsSection extends AbstractComponent {
     this._film = film;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createCommentsSectionMarkup(this._film);
-  }
-
-  setEmojiClickHandler(handler) {
-    const emojis = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
-
-    emojis.forEach((item) => {
-      item.addEventListener(`click`, handler);
-    });
   }
 
   getCommentsContainer() {
@@ -76,12 +70,22 @@ export default class CommentsSection extends AbstractComponent {
     return this.getElement().querySelector(`.film-details__new-comment`);
   }
 
+  // -------------------------------- Другое -------------------------------
+
   createEmojiImg() {
     this._emojiContainer.innerHTML = SELECTED_EMOJI_MARKUP;
     return this._emojiContainer.firstElementChild;
   }
 
-  // ------------------------------- Слушатели -------------------------------
+  // ------------------------------ Слушатели ------------------------------
+
+  setEmojiClickHandler(handler) {
+    const emojis = Array.from(this.getElement().querySelectorAll(`.film-details__emoji-label`));
+
+    emojis.forEach((item) => {
+      item.addEventListener(`click`, handler);
+    });
+  }
 
   setMessageOnInputHandler(handler) {
     this._onInputHandler = handler;
@@ -96,14 +100,4 @@ export default class CommentsSection extends AbstractComponent {
       input.removeEventListener(`input`, this._onInputHandler);
     }
   }
-
-  // Возможно стоит оставить хэндлер на форме, а не на поле.
-  // setCommentSendHandler(handler) {
-  //   this.getElement().querySelector(`.film-details__comment-input`)
-  //     .addEventListener(`keydown`, (evt) => {
-  //       if (evt.key === Key.ENTER && (evt.ctrlKey || evt.metaKey)) {
-  //         handler(evt);
-  //       }
-  //     });
-  // }
 }

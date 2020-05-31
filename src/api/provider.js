@@ -14,10 +14,6 @@ export default class Provider {
     this._isChangedOffline = false;
   }
 
-  checkIfChangeOffline() {
-    return this._isChangedOffline;
-  }
-
   getMovies() {
     if (isOnline()) {
       return this._api.getMovies()
@@ -36,6 +32,15 @@ export default class Provider {
     return Promise.resolve(parsedMovies);
   }
 
+  getMovieComments(movieId) {
+    return this._api.getMovieComments(movieId)
+    .catch(() => {
+      return Promise.resolve([]);
+    });
+  }
+
+  // -------------------------------------------------------------
+
   updateMovie(id, movie) {
     if (isOnline()) {
       return this._api.updateMovie(id, movie)
@@ -51,13 +56,6 @@ export default class Provider {
     return Promise.resolve(localMovie);
   }
 
-  getMovieComments(movieId) {
-    return this._api.getMovieComments(movieId)
-    .catch(() => {
-      return Promise.resolve([]);
-    });
-  }
-
   createComment(newComment, movieId) {
     return this._api.createComment(newComment, movieId);
   }
@@ -65,6 +63,12 @@ export default class Provider {
   deleteComment(commentId) {
     return this._api.deleteComment(commentId);
   }
+
+  checkIfChangedOffline() {
+    return this._isChangedOffline;
+  }
+
+  // -------------------------------------------------------------
 
   sync() {
     if (isOnline()) {

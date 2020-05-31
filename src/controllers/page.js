@@ -12,6 +12,8 @@ import {getTopRated, getTopCommented} from '../utils/common';
 import {ExtraTitle, RenderPosition, START_INDEX} from '../const';
 import {render, remove, replace} from '../utils/render';
 
+// =============================================================
+
 const SHOWN_FILMS_NUMBER_AT_START = 5;
 const SHOWN_FILMS_NUMBER_BY_BTN = 5;
 const EXTRA_FILMS_NUMBER = 2;
@@ -88,59 +90,23 @@ export default class PageController {
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._moreButtonClickHandler = this._moreButtonClickHandler.bind(this);
+    this._onMoreButtonClick = this._onMoreButtonClick.bind(this);
 
     this._sort.setSortTypeChangeHandler(this._onSortTypeChange);
     this._moviesModel.setFilterChangeHandler(this._onFilterChange);
   }
 
-  // --------------------------------------------------------------
+  // ---------------------------------------------------------------
 
-  _renderMovies(movies) {
-    const moviesContainer = this._filmsContainer.getElement();
-
-    const newMovies = renderFilms(
-        moviesContainer,
-        movies,
-        this._api,
-        this._onDataChange,
-        this._onViewChange
-    );
-
-    this._shownMovieControllers = this._shownMovieControllers.concat(newMovies);
-    this._shownFilmsNumber = this._shownMovieControllers.length;
+  show() {
+    this._filmsSection.show();
   }
 
-  _renderExtras(topRated, topCommented) {
-    this._shownTopRatedMovieControllers = renderFilms(
-        this._filmsTopRatedContainer.getElement(),
-        topRated,
-        this._api,
-        this._onDataChange,
-        this._onViewChange
-    );
-
-    this._shownTopCommentedMovieControllers = renderFilms(
-        this._filmsTopCommentedContainer.getElement(),
-        topCommented,
-        this._api,
-        this._onDataChange,
-        this._onViewChange
-    );
+  hide() {
+    this._filmsSection.hide();
   }
 
-  _removeMovies() {
-    this._shownMovieControllers.forEach((controller) => controller.destroy());
-    this._shownMovieControllers = [];
-  }
-
-  _updateMovies(count) {
-    this._removeMovies();
-    this._renderMovies(this._moviesModel.getMovies().slice(START_INDEX, count));
-    this._renderLoadMoreBtn();
-  }
-
-  // --------------------------------------------------------------
+  // ================================== Рендер ==================================
 
   render(heading) {
     const movies = this._moviesModel.getMovies();
@@ -196,6 +162,70 @@ export default class PageController {
 
   // --------------------------------------------------------------
 
+  _renderMovies(movies) {
+    const moviesContainer = this._filmsContainer.getElement();
+
+    const newMovies = renderFilms(
+        moviesContainer,
+        movies,
+        this._api,
+        this._onDataChange,
+        this._onViewChange
+    );
+
+    this._shownMovieControllers = this._shownMovieControllers.concat(newMovies);
+    this._shownFilmsNumber = this._shownMovieControllers.length;
+  }
+
+  _renderExtras(topRated, topCommented) {
+    this._shownTopRatedMovieControllers = renderFilms(
+        this._filmsTopRatedContainer.getElement(),
+        topRated,
+        this._api,
+        this._onDataChange,
+        this._onViewChange
+    );
+
+    this._shownTopCommentedMovieControllers = renderFilms(
+        this._filmsTopCommentedContainer.getElement(),
+        topCommented,
+        this._api,
+        this._onDataChange,
+        this._onViewChange
+    );
+  }
+
+  _renderLoadMoreBtn() {
+    if (this._shownFilmsNumber >= this._moviesModel.getMovies().length) {
+      remove(this._moreBtnElement.getElement());
+      return;
+    }
+    render(this._filmsList.getElement(), this._moreBtnElement, RenderPosition.BEFOREEND);
+
+    this._moreBtnElement.setClickHandler(this._onMoreButtonClick);
+  }
+
+  // --------------------------------------------------------------
+
+  _removeMovies() {
+    this._shownMovieControllers.forEach((controller) => controller.destroy());
+    this._shownMovieControllers = [];
+  }
+
+  _updateMovies(count) {
+    this._removeMovies();
+    this._renderMovies(this._moviesModel.getMovies().slice(START_INDEX, count));
+    this._renderLoadMoreBtn();
+  }
+
+  _findMovieController(controllers, controller) {
+    const id = controller.getMovie().id;
+    const isFound = controllers.find((item) => item.getMovie().id === id);
+    return isFound;
+  }
+
+  // ================================= Обработчики =================================
+
   _onDataChange(movieController, oldData, newData) {
     this._api.updateMovie(oldData.id, newData)
       .then((movieModel) => {
@@ -219,12 +249,6 @@ export default class PageController {
           topCommentedController.render(movieModel);
         }
       });
-  }
-
-  _findMovieController(controllers, controller) {
-    const id = controller.getMovie().id;
-    const isFound = controllers.find((item) => item.getMovie().id === id);
-    return isFound;
   }
 
   _onViewChange() {
@@ -258,7 +282,7 @@ export default class PageController {
 
   // --------------------------------------------------------------
 
-  _moreButtonClickHandler() {
+  _onMoreButtonClick() {
     const movies = this._moviesModel.getMovies();
 
     const prevShownFilmsNumber = this._shownFilmsNumber;
@@ -276,25 +300,5 @@ export default class PageController {
     if (this._shownFilmsNumber >= movies.length) {
       remove(this._moreBtnElement.getElement());
     }
-  }
-
-  _renderLoadMoreBtn() {
-    if (this._shownFilmsNumber >= this._moviesModel.getMovies().length) {
-      remove(this._moreBtnElement.getElement());
-      return;
-    }
-    render(this._filmsList.getElement(), this._moreBtnElement, RenderPosition.BEFOREEND);
-
-    this._moreBtnElement.setClickHandler(this._moreButtonClickHandler);
-  }
-
-  // --------------------------------------------------------------
-
-  show() {
-    this._filmsSection.show();
-  }
-
-  hide() {
-    this._filmsSection.hide();
   }
 }

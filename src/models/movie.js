@@ -27,14 +27,6 @@ export default class Movie {
     this.comments = [];
   }
 
-  static parseMovie(movie) {
-    return new Movie(movie);
-  }
-
-  static parseMovies(movies) {
-    return movies.map(Movie.parseMovie);
-  }
-
   toRAW() {
     return {
       'id': this.id,
@@ -63,6 +55,16 @@ export default class Movie {
         'watchlist': this.isInWatchlist || false,
       }
     };
+  }
+
+  // ------------------------------------------------------
+
+  static parseMovie(movie) {
+    return new Movie(movie);
+  }
+
+  static parseMovies(movies) {
+    return movies.map(Movie.parseMovie);
   }
 
   static clone(movie) {

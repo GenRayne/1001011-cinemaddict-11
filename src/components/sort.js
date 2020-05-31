@@ -24,6 +24,8 @@ export default class Sort extends AbstractComponent {
     this._sortType = SortType.DEFAULT;
   }
 
+  // ------------------------------- Get -------------------------------
+
   getTemplate() {
     return createSortTemplate();
   }
@@ -31,6 +33,8 @@ export default class Sort extends AbstractComponent {
   getSortType() {
     return this._sortType;
   }
+
+  // ---------------------------- Слушатели ----------------------------
 
   setSortTypeChangeHandler(handler) {
     const sortItems = this.getElement().querySelectorAll(`.sort__button`);

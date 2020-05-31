@@ -7,9 +7,13 @@ export default class Comments {
     this._dataChangeHandlers = [];
   }
 
+  // ------------------------- Get -------------------------
+
   getComments() {
     return this._comments;
   }
+
+  // ------------------------- Set -------------------------
 
   setComments(comments) {
     this._comments = Array.from(comments);
@@ -19,6 +23,8 @@ export default class Comments {
   setDataChangeHandler(handler) {
     this._dataChangeHandlers.push(handler);
   }
+
+  // -----------------------------------------------
 
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());

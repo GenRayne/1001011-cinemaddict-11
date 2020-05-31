@@ -1,7 +1,6 @@
 import MainMenu from '../components/main-menu';
 import Statistics from '../components/statistics';
-import {getMoviesByFilter, getWatchedMovies} from '../utils/filter';
-import {filterByWatchingDates} from '../utils/common';
+import {getMoviesByFilter, getWatchedMovies, filterByWatchingDates} from '../utils/filter';
 import {MoviesFilter, RenderPosition, MenuItem, TimePeriod} from '../const';
 import {render, replace, remove} from '../utils/render';
 import moment from "moment";
@@ -24,6 +23,54 @@ export default class FilterController {
 
     this._moviesModel.setDataChangeHandler(this._onDataChange);
   }
+
+  // ------------------------------- Set -------------------------------
+
+  _setActiveFilter(filterType) {
+    this._activeFilterType = filterType;
+    this._moviesModel.setFilter(filterType);
+  }
+
+  // -------------------------------------------------------------------
+
+  render(filmSection) {
+    if (filmSection) {
+      this._filmSection = filmSection;
+    }
+
+    const allMovies = this._moviesModel.getMoviesAll();
+    const filters = Object.values(MoviesFilter).map((filterType) => ({
+      name: filterType,
+      count: getMoviesByFilter(allMovies, filterType).length,
+      isActive: filterType === this._activeFilterType,
+    }));
+    const oldComponent = this._filterComponent;
+
+    this._filterComponent = new MainMenu(allMovies, filters);
+    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+
+    if (oldComponent) {
+      replace(this._filterComponent, oldComponent);
+    } else {
+      render(this._container, this._filterComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  _renderStatsPage(movies, watchedMovies, period) {
+    if (this._statisticsComponent) {
+      remove(this._statisticsComponent.getElement());
+    }
+
+    this._statisticsComponent = new Statistics(movies, watchedMovies, period);
+    render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
+    this._statisticsComponent.renderChart();
+    this._statisticsComponent.setTimePeriodToggleHandler(this._onStatsTimePeriodChange);
+
+    this._filmSection.hide();
+    this._statisticsComponent.show();
+  }
+
+  // --------------------------- Обработчики ---------------------------
 
   _onFilterChange(filterType) {
     this._setActiveFilter(filterType);
@@ -69,49 +116,7 @@ export default class FilterController {
     }
   }
 
-  _setActiveFilter(filterType) {
-    this._activeFilterType = filterType;
-    this._moviesModel.setFilter(filterType);
-  }
-
   _onDataChange() {
     this.render();
-  }
-
-  render(filmSection) {
-    if (filmSection) {
-      this._filmSection = filmSection;
-    }
-
-    const allMovies = this._moviesModel.getMoviesAll();
-    const filters = Object.values(MoviesFilter).map((filterType) => ({
-      name: filterType,
-      count: getMoviesByFilter(allMovies, filterType).length,
-      isActive: filterType === this._activeFilterType,
-    }));
-    const oldComponent = this._filterComponent;
-
-    this._filterComponent = new MainMenu(allMovies, filters);
-    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
-
-    if (oldComponent) {
-      replace(this._filterComponent, oldComponent);
-    } else {
-      render(this._container, this._filterComponent, RenderPosition.BEFOREEND);
-    }
-  }
-
-  _renderStatsPage(movies, watchedMovies, period) {
-    if (this._statisticsComponent) {
-      remove(this._statisticsComponent.getElement());
-    }
-
-    this._statisticsComponent = new Statistics(movies, watchedMovies, period);
-    render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
-    this._statisticsComponent.renderChart();
-    this._statisticsComponent.setTimePeriodToggleHandler(this._onStatsTimePeriodChange);
-
-    this._filmSection.hide();
-    this._statisticsComponent.show();
   }
 }
