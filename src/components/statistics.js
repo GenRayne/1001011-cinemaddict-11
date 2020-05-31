@@ -9,41 +9,62 @@ const BAR_HEIGHT = 50;
 const FIRST_INDEX = 0;
 const SECOND_INDEX = 1;
 
+const chartOptions = {
+  type: `horizontalBar`,
+  dataset: {
+    backgroundColor: `#ffe800`,
+    anchor: `start`,
+    barThickness: 24,
+  },
+  label: {
+    anchor: `start`,
+    align: `start`,
+    offset: 40,
+    fontSize: 20,
+    color: `#ffffff`,
+  },
+  tick: {
+    padding: 100,
+    fontSize: 20,
+    color: `#ffffff`
+  }
+};
+
 const chartProps = (genres) => {
   const labels = genres.map((item) => item[FIRST_INDEX]);
   const values = genres.map((item) => item[SECOND_INDEX]);
 
   return {
     plugins: [ChartDataLabels],
-    type: `horizontalBar`,
+    type: chartOptions.type,
     data: {
       labels,
       datasets: [{
         data: values,
-        backgroundColor: `#ffe800`,
-        hoverBackgroundColor: `#ffe800`,
-        anchor: `start`,
-        barThickness: 24
+        backgroundColor: chartOptions.dataset.backgroundColor,
+        hoverBackgroundColor: chartOptions.dataset.backgroundColor,
+        anchor: chartOptions.dataset.anchor,
+        barThickness: chartOptions.dataset.barThickness
       }]
     },
     options: {
       plugins: {
         datalabels: {
           font: {
-            size: 20
+            size: chartOptions.label.fontSize
           },
-          color: `#ffffff`,
-          anchor: `start`,
-          align: `start`,
-          offset: 40,
+          color: chartOptions.label.color,
+          anchor: chartOptions.label.anchor,
+          align: chartOptions.label.align,
+          offset: chartOptions.label.offset,
         }
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: `#ffffff`,
-            padding: 100,
-            fontSize: 20
+            fontColor: chartOptions.tick.color,
+            padding: chartOptions.tick.padding,
+            fontSize: chartOptions.tick.fontSize
           },
           gridLines: {
             display: false,

@@ -5,7 +5,7 @@ import FilmsExtra from '../components/films-extra';
 import FilmsList from '../components/films-list';
 import FilmsSection from '../components/films-section';
 import MoreBtn from '../components/more-btn';
-import MovieController from '../controllers/movie';
+import MovieController from '../controllers/movie-controller';
 import Sort, {SortType} from '../components/sort';
 
 import {getTopRated, getTopCommented} from '../utils/common';

@@ -1,4 +1,4 @@
-import CommentController from '../controllers/comment';
+import CommentController from './comment-controller';
 import CommentModel from '../models/comment';
 import CommentsLoader from '../components/comments-loader';
 import CommentsSection from '../components/comments-section';

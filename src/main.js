@@ -1,10 +1,10 @@
-import API from './api/index';
+import API from './api/api';
 import Provider from './api/provider';
 import Store from './api/store';
-import FilterController from './controllers/filter';
+import FilterController from './controllers/filter-controller';
 import FooterStats from './components/footer-stats';
 import Movies from './models/movies';
-import PageController from './controllers/page';
+import PageController from './controllers/page-controller';
 import UserSection from './components/user-section';
 
 import {render, remove} from './utils/render';
