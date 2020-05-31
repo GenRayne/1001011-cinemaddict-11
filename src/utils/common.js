@@ -1,5 +1,8 @@
 import moment from "moment";
-import {START_INDEX, INPUT_ERROR_SHADOW, SHAKE_TIMEOUT, MINUTES_IN_HOUR} from '../const';
+import {
+  START_INDEX, INPUT_ERROR_SHADOW, SHAKE_TIMEOUT, MINUTES_IN_HOUR, UserRating, RatingStep
+} from '../const';
+import {getWatchedMovies} from './filter';
 
 export const getTopRated = (films, count) => films.slice()
   .sort((a, b) => b.rating - a.rating)
@@ -21,6 +24,23 @@ export const shake = (element) => {
   setTimeout(() => {
     element.classList.remove(`shake`);
   }, SHAKE_TIMEOUT);
+};
+
+export const getUserRating = (movies) => {
+  const moviesWatched = getWatchedMovies(movies).length;
+
+  let userRating = ``;
+
+  if (moviesWatched && moviesWatched <= RatingStep.FIRST) {
+    userRating = UserRating.NOVICE;
+  } else if (moviesWatched > RatingStep.FIRST
+          && moviesWatched <= RatingStep.SECOND) {
+    userRating = UserRating.FAN;
+  } else if (moviesWatched > RatingStep.SECOND) {
+    userRating = UserRating.MOVIE_BUFF;
+  }
+
+  return userRating;
 };
 
 // ================= Стили ошибки =================

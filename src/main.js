@@ -33,7 +33,6 @@ const siteFooterElement = document.querySelector(`.footer`);
 
 // -------------------------------------------------------
 
-const userSectionElement = new UserSection([]);
 const moviesModel = new Movies();
 
 const filterController = new FilterController(siteMainElement, moviesModel);
@@ -45,8 +44,6 @@ const footerStats = new FooterStats(NO_MOVIES);
 
 moviesModel.setMovies([]);
 
-render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
-
 filterController.render();
 filmSection.render(LoadingText.DEFAULT);
 
@@ -57,6 +54,9 @@ render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);
 apiWithProvider.getMovies()
 .then((movies) => {
   moviesModel.setMovies(movies);
+  const userSectionElement = new UserSection(movies);
+  render(siteHeaderElement, userSectionElement, RenderPosition.BEFOREEND);
+
   filmSection.render();
 
   const newFooterStats = new FooterStats(movies.length);

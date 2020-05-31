@@ -1,7 +1,7 @@
 import AbstractComponent from "./abstract-component.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getHours, getMinutesLeft, isChecked} from '../utils/common';
+import {getHours, getMinutesLeft, isChecked, getUserRating} from '../utils/common';
 import {TimePeriod, timePeriodToItemName} from '../const';
 
 const BAR_HEIGHT = 50;
@@ -100,6 +100,7 @@ const createRadiosMarkup = (name, period = TimePeriod.ALL) => {
 
 const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
   const watchedFilmsNumber = watchedMovies.length;
+  const userRating = getUserRating(watchedMovies);
 
   const INITIAL_TIME_WATCHED = 0;
 
@@ -121,7 +122,7 @@ const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        <span class="statistic__rank-label">${userRating}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
