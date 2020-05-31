@@ -1,7 +1,11 @@
 const CACHE_PREFIX = `cinemaddict-cache`;
 const CACHE_VER = `v1`;
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
-const DELETE_METHOD = `DELETE`;
+
+const Method = {
+  POST: `POST`,
+  DELETE: `DELETE`
+};
 
 const getResponseData = (request) => {
   return caches.match(request)
@@ -12,7 +16,8 @@ const getResponseData = (request) => {
 
       return fetch(request)
         .then((response) => {
-          if (!response || response.status !== 200 || request.method === DELETE_METHOD) {
+          if (!response || response.status !== 200 ||
+              request.method === Method.DELETE || request.method === Method.POST) {
             return response;
           }
 

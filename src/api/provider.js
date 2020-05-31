@@ -1,5 +1,7 @@
 import Movie from '../models/movie';
 
+const FAILED_SYNC_TEXT = `Synchronization failed`;
+
 export const isOnline = () => {
   return window.navigator.onLine;
 };
@@ -8,13 +10,24 @@ export default class Provider {
   constructor(api, store) {
     this._api = api;
     this._store = store;
+
+    this._isChangedOffline = false;
+  }
+
+  checkIfChangeOffline() {
+    return this._isChangedOffline;
   }
 
   getMovies() {
     if (isOnline()) {
       return this._api.getMovies()
         .then((movies) => {
-          movies.forEach((movie) => this._store.setItem(movie.id, movie.toRAW()));
+          const items = movies.reduce((acc, movie) => {
+            return Object.assign({}, acc, {[movie.id]: movie.toRAW()});
+          }, {});
+          this._store.setItems(items);
+
+          this._isChangedOffline = false;
           return movies;
         });
     }
@@ -34,6 +47,7 @@ export default class Provider {
     const localMovie = Movie.clone(Object.assign(data, {id}));
     this._store.setItem(id, localMovie.toRAW());
 
+    this._isChangedOffline = true;
     return Promise.resolve(localMovie);
   }
 
@@ -50,5 +64,21 @@ export default class Provider {
 
   deleteComment(commentId) {
     return this._api.deleteComment(commentId);
+  }
+
+  sync() {
+    if (isOnline()) {
+      const storeMovies = Object.values(this._store.getItems());
+
+      return this._api.sync(storeMovies)
+        .then((response) => {
+          const updatedMovies = response.updated;
+          this._store.setItems(updatedMovies);
+
+          return updatedMovies;
+        });
+    }
+
+    return Promise.reject(new Error(FAILED_SYNC_TEXT));
   }
 }

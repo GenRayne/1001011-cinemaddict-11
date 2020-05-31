@@ -19,6 +19,8 @@ const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_VER = `v1`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
+const OFFLINE_TITLE_POSTFIX = ` [offline]`;
+
 const api = new API(END_POINT, AUTHORIZATION);
 const store = new Store(STORE_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store);
@@ -75,11 +77,14 @@ window.addEventListener(`load`, () => {
 });
 
 window.addEventListener(`online`, () => {
-  document.title = document.title.replace(` [offline]`, ``);
+  document.title = document.title.replace(OFFLINE_TITLE_POSTFIX, ``);
 
-  // apiWithProvider.sync();
+  const isChangedOffline = apiWithProvider.checkIfChangeOffline();
+  if (isChangedOffline) {
+    apiWithProvider.sync();
+  }
 });
 
 window.addEventListener(`offline`, () => {
-  document.title += ` [offline]`;
+  document.title += OFFLINE_TITLE_POSTFIX;
 });
