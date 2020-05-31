@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import moment from "moment";
 import {getDuration} from '../utils/common';
 
@@ -80,7 +80,7 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCard extends AbstractSmartComponent {
+export default class FilmCard extends AbstractComponent {
   constructor(film) {
     super();
     this._film = film;
@@ -88,19 +88,6 @@ export default class FilmCard extends AbstractSmartComponent {
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  rerender() {
-    super.rerender(this);
-  }
-
-  recoverListeners() {
-    this.setPosterClickHandler(this._posterClickHandler);
-    this.setTitleClickHandler(this._titleClickHandler);
-    this.setCommentsClickHandler(this._commentsClickHandler);
-    this.setWatchlistIconClickHandler(this._watchlistBtnClickHandler);
-    this.setWatchedIconClickHandler(this._watchedIconClickHandler);
-    this.setFavouriteIconClickHandler(this._favouriteIconClickHandler);
   }
 
   // ------------------------------- Слушатели -------------------------------

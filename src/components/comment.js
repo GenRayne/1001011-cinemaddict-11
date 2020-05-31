@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import {getDateFromNow} from '../utils/common';
 
 const getCommentMarkup = (comment) => {
@@ -28,7 +28,7 @@ const getCommentMarkup = (comment) => {
   );
 };
 
-export default class Comment extends AbstractSmartComponent {
+export default class Comment extends AbstractComponent {
   constructor(comment) {
     super();
     this._comment = comment;

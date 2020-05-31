@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getHours, getMinutesLeft, isChecked} from '../utils/common';
@@ -154,7 +154,7 @@ const createStatsMarkup = (watchedMovies, genresWithCount, period) => {
   );
 };
 
-export default class Statistics extends AbstractSmartComponent {
+export default class Statistics extends AbstractComponent {
   constructor(movies, period) {
     super();
     this._movies = movies;

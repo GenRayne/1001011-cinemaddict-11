@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import {
   formatLongDate,
   getDuration,
@@ -144,7 +144,7 @@ const createFilmDetailsTemplate = (film) => {
 
 // ================================================================================
 
-export default class FilmDetails extends AbstractSmartComponent {
+export default class FilmDetails extends AbstractComponent {
   constructor(film) {
     super();
     this._film = film;
@@ -152,17 +152,6 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
-  }
-
-  rerender() {
-    super.rerender(this);
-  }
-
-  recoverListeners() {
-    this.setCloseBtnClickHandler(this._closeBtnClickHandler);
-    this.setWatchlistBtnClickHandler(this._watchlistBtnClickHandler);
-    this.setWatchedBtnClickHandler(this._watchedBtnClickHandler);
-    this.setFavouriteBtnClickHandler(this._favouriteBtnClickHandler);
   }
 
   // -------------------------------------------------------------------------

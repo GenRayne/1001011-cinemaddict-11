@@ -1,4 +1,4 @@
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractComponent from "./abstract-component.js";
 import {EMOJIS} from '../const';
 
 const SELECTED_EMOJI_MARKUP = `<img width="55" height="55">`;
@@ -37,7 +37,7 @@ const createCommentsSectionMarkup = (comments) => {
   );
 };
 
-export default class CommentsSection extends AbstractSmartComponent {
+export default class CommentsSection extends AbstractComponent {
   constructor(film) {
     super();
     this._film = film;
