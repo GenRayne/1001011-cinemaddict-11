@@ -228,7 +228,9 @@ export default class PageController {
 
   _updateMovies(count) {
     this._removeMovies();
-    this._renderMovies(this._moviesModel.getMovies().slice(START_INDEX, count));
+    const movies = this._moviesModel.getMovies().slice(START_INDEX, count);
+    this._shownFilmsNumber = movies.length;
+    this._renderMovies(movies);
     this._renderLoadMoreBtn();
   }
 
@@ -264,8 +266,10 @@ export default class PageController {
         }
 
         if (oldData.isWatched !== movieModel.isWatched) {
-          this._renderUserSection(this._moviesModel.getMovies());
+          this._renderUserSection(this._moviesModel.getMoviesAll());
         }
+
+        this._onSortTypeChange(this._activeSortType);
       });
   }
 
@@ -286,7 +290,8 @@ export default class PageController {
     this._updateMovies(SHOWN_FILMS_NUMBER_AT_START);
   }
 
-  _onSortTypeChange(sortType) {
+  _onSortTypeChange(sortType = SortType.DEFAULT) {
+    this._activeSortType = sortType;
     const movies = this._moviesModel.getMovies();
     this._shownFilmsNumber = SHOWN_FILMS_NUMBER_AT_START;
 
